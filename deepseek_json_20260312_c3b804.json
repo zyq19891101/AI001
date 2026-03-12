@@ -1,0 +1,170 @@
+{
+  "name": {
+    "zh": "AI短剧图生视频提示词指令包",
+    "en": "AI Short Drama Image-to-Video Prompt Instruction Pack"
+  },
+  "version": "1.0",
+  "description": {
+    "zh": "包含核心公式、分镜模板、动作控制、风格关键词及避坑指南，适用于各类AI视频生成工具（可灵、即梦、Runway等）。",
+    "en": "Includes core formula, storyboard templates, motion control, style keywords, and pitfalls avoidance guide, suitable for various AI video generation tools (Kling, Jimeng, Runway, etc.)."
+  },
+  "core_formula": {
+    "zh": "[主体] + [动作] + [情绪/微表情] + [与背景互动] + [运镜方式] + [光影氛围]",
+    "en": "[Subject] + [Action] + [Emotion/Micro-expression] + [Interaction with background] + [Camera movement] + [Lighting/Atmosphere]"
+  },
+  "templates": {
+    "basic_action": {
+      "description": {
+        "zh": "基础动作模板（替换方括号内容）",
+        "en": "Basic action template (replace content in brackets)"
+      },
+      "template": {
+        "zh": "【主体描述，如：一个穿红裙子的女孩】 【动作细节，如：缓缓转身，长发随风飘动】 【情绪/微表情，如：面带微笑，眼神温柔】 【与背景的互动，如：伸手触碰路边的樱花树】 【镜头运动，如：镜头从正面缓慢推近，最终聚焦在眼睛上】 【光影氛围，如：夕阳逆光，柔和的暖色调，电影质感】",
+        "en": "[Subject description, e.g., a girl in a red dress] [Action details, e.g., slowly turns around, long hair flowing in the wind] [Emotion/Micro-expression, e.g., smiling gently, tender eyes] [Interaction with background, e.g., reaches out to touch a cherry blossom tree by the road] [Camera movement, e.g., camera slowly pushes in from the front, finally focusing on the eyes] [Lighting/Atmosphere, e.g., sunset backlight, soft warm tones, cinematic quality]"
+      }
+    },
+    "storyboard": {
+      "description": {
+        "zh": "分镜叙事模板（讲连贯故事）",
+        "en": "Storyboard narrative template (tell a coherent story)"
+      },
+      "template": {
+        "zh": "【短剧主题：例如“重生复仇”】 镜头1（0-3秒）：【描述第一个画面，包括主体动作、情绪】 转场：【例如：快速闪烁/淡入淡出/震动特效】 镜头2（4-7秒）：【描述第二个画面，动作升级/转折】 转场：【例如：匹配剪辑/声音先导】 镜头3（8-10秒）：【高潮画面，定格在某个表情或大场景】",
+        "en": "[Short drama theme, e.g., 'Rebirth and Revenge'] Shot 1 (0-3 sec): [Describe the first shot, including subject action and emotion] Transition: [e.g., quick flash/fade in and out/shake effect] Shot 2 (4-7 sec): [Describe the second shot, action escalation/twist] Transition: [e.g., match cut/sound lead] Shot 3 (8-10 sec): [Climax shot, freeze on a certain expression or wide scene]"
+      }
+    },
+    "motion_control": {
+      "description": {
+        "zh": "动作控制与稳定指令",
+        "en": "Motion control and stabilization instructions"
+      },
+      "template": {
+        "zh": "【主体】的【部位，如右手】缓慢抬起，指向远方，【另一部位，如左手】自然下垂，身体微微前倾，目光随着手指移动，【背景中的某物体，如远处的山】保持不动。 动作丝滑，四肢协调，面部细节清晰，背景保持静止，避免变形，物理规律正确，主体一致性高",
+        "en": "[Subject]'s [body part, e.g., right hand] slowly rises, pointing into the distance, [another part, e.g., left hand] hangs naturally, body leans slightly forward, gaze follows the finger, [an object in the background, e.g., distant mountain] remains still. Smooth motion, coordinated limbs, clear facial details, background remains static, avoid distortion, correct physical laws, high subject consistency."
+      }
+    },
+    "audio_driven": {
+      "description": {
+        "zh": "音频/情绪驱动指令",
+        "en": "Audio/Emotion-driven instructions"
+      },
+      "emotion_lip_sync": {
+        "zh": "【主体】面对镜头，嘴唇自然开合，【说话内容大致描述，如：诉说着悲伤的往事】，语气低沉，眉头微皱，眼角泛红，泪水在眼眶打转，背景逐渐变暗，聚焦面部。",
+        "en": "[Subject] faces the camera, lips naturally open and close, [rough description of speech content, e.g., recounting a sad past], tone low, brows slightly furrowed, eyes reddening, tears welling up, background gradually darkens, focus on face."
+      },
+      "music_beat": {
+        "zh": "随着背景音乐的低音鼓点，画面产生轻微的震动，当音乐高潮到来时，【主体】做出爆发动作，如挥拳或跳跃，粒子光效炸开，色彩饱和度瞬间提高。",
+        "en": "With the bass drum beats of the background music, the画面 (frame) shakes slightly. When the music climax arrives, [subject] makes an explosive move, such as punching or jumping, particle effects burst, color saturation instantly increases."
+      }
+    }
+  },
+  "keywords_library": {
+    "camera_movement": [
+      { "zh": "推近", "en": "push in" },
+      { "zh": "拉远", "en": "pull out" },
+      { "zh": "左移", "en": "pan left" },
+      { "zh": "右移", "en": "pan right" },
+      { "zh": "上摇", "en": "tilt up" },
+      { "zh": "下摇", "en": "tilt down" },
+      { "zh": "环绕", "en": "orbit" },
+      { "zh": "跟随", "en": "follow" },
+      { "zh": "第一人称视角", "en": "first-person view" },
+      { "zh": "航拍视角", "en": "aerial view" },
+      { "zh": "低角度仰拍", "en": "low-angle shot" },
+      { "zh": "高角度俯拍", "en": "high-angle shot" },
+      { "zh": "变焦", "en": "zoom" },
+      { "zh": "焦点切换", "en": "focus pull" }
+    ],
+    "lighting_atmosphere": [
+      { "zh": "黄金时刻", "en": "golden hour" },
+      { "zh": "蓝色时刻", "en": "blue hour" },
+      { "zh": "霓虹灯光", "en": "neon lighting" },
+      { "zh": "赛博朋克", "en": "cyberpunk" },
+      { "zh": "暗调", "en": "dark tone" },
+      { "zh": "高对比", "en": "high contrast" },
+      { "zh": "柔和光", "en": "soft light" },
+      { "zh": "逆光", "en": "backlight" },
+      { "zh": "剪影", "en": "silhouette" },
+      { "zh": "丁达尔效应", "en": "Tyndall effect" },
+      { "zh": "舞台聚光", "en": "stage spotlight" }
+    ],
+    "style_quality": [
+      { "zh": "4K", "en": "4K" },
+      { "zh": "8K", "en": "8K" },
+      { "zh": "电影质感", "en": "cinematic" },
+      { "zh": "胶片颗粒", "en": "film grain" },
+      { "zh": "复古滤镜", "en": "vintage filter" },
+      { "zh": "动漫风格", "en": "anime style" },
+      { "zh": "吉卜力风", "en": "Ghibli style" },
+      { "zh": "水墨风", "en": "ink wash style" },
+      { "zh": "油画质感", "en": "oil painting texture" },
+      { "zh": "写实摄影", "en": "photorealistic" },
+      { "zh": "超现实", "en": "surreal" }
+    ],
+    "transition_effects": [
+      { "zh": "淡入淡出", "en": "fade in/out" },
+      { "zh": "闪白", "en": "flash white" },
+      { "zh": "闪黑", "en": "flash black" },
+      { "zh": "旋转", "en": "rotate" },
+      { "zh": "缩放", "en": "zoom" },
+      { "zh": "模糊", "en": "blur" },
+      { "zh": "溶解", "en": "dissolve" },
+      { "zh": "滑动", "en": "slide" },
+      { "zh": "擦除", "en": "wipe" },
+      { "zh": "匹配剪辑", "en": "match cut" },
+      { "zh": "声音先导", "en": "sound lead" },
+      { "zh": "震动特效", "en": "shake effect" }
+    ],
+    "time_control": [
+      { "zh": "慢动作", "en": "slow motion" },
+      { "zh": "快进", "en": "fast forward" },
+      { "zh": "定格", "en": "freeze frame" },
+      { "zh": "倒放", "en": "reverse" },
+      { "zh": "延时", "en": "time-lapse" }
+    ]
+  },
+  "avoidance_terms": [
+    { "zh": "无画面闪烁", "en": "no flickering" },
+    { "zh": "无多指畸形", "en": "no extra fingers" },
+    { "zh": "人物比例正常", "en": "normal proportions" },
+    { "zh": "动作自然连贯", "en": "natural and coherent motion" },
+    { "zh": "背景无扭曲", "en": "no background distortion" },
+    { "zh": "光影稳定", "en": "stable lighting" },
+    { "zh": "无穿帮", "en": "no glitches" }
+  ],
+  "examples": [
+    {
+      "name": { "zh": "古风打斗", "en": "Ancient style fight" },
+      "upload_image": {
+        "zh": "两个古装侠客在竹林中对峙",
+        "en": "Two ancient warriors in costumes confront each other in a bamboo forest"
+      },
+      "prompt": {
+        "zh": "左侧的黑衣侠客拔剑冲向右侧的白衣侠客，剑刃反射阳光，脚步蹬地激起竹叶，白衣侠客侧身闪避，同时抽出腰间长剑格挡，两人眼神交锋，镜头快速跟拍，环绕360度，竹叶纷飞，光线从竹叶间隙洒下，电影质感，动作丝滑，避免穿帮。",
+        "en": "The black-clad warrior on the left draws his sword and charges at the white-clad warrior on the right. The blade reflects sunlight, footsteps kick up bamboo leaves. The white-clad warrior dodges sideways while drawing his own sword to block. Their eyes meet. The camera follows quickly, orbits 360 degrees, bamboo leaves swirl, light filters through the leaves. Cinematic, smooth motion, avoid glitches."
+      }
+    },
+    {
+      "name": { "zh": "都市情感", "en": "Urban romance" },
+      "upload_image": {
+        "zh": "一对情侣在雨中背对背站立",
+        "en": "A couple standing back to back in the rain"
+      },
+      "prompt": {
+        "zh": "女孩缓缓转身，看向男孩，雨水顺着脸颊流下，眼神悲伤，嘴唇微张欲言又止，男孩依然背对，肩膀微微颤抖，镜头缓慢推近女孩的脸部特写，背景车流虚化，冷色调，浅景深，4K高清。",
+        "en": "The girl slowly turns to look at the boy. Rainwater streams down her cheeks, eyes sad, lips slightly parted as if to speak. The boy remains with his back turned, shoulders trembling slightly. The camera slowly pushes in for a close-up of the girl's face. Background traffic blurred, cold tones, shallow depth of field, 4K高清 (4K high-definition)."
+      }
+    },
+    {
+      "name": { "zh": "魔幻觉醒", "en": "Fantasy awakening" },
+      "upload_image": {
+        "zh": "一个普通人站在废墟上",
+        "en": "An ordinary person standing on ruins"
+      },
+      "prompt": {
+        "zh": "主角低头看着双手，突然双手开始发出蓝色光芒，光芒逐渐扩散到全身，头发无风自动飘起，周围碎石漂浮起来，主角抬头望向天空，眼神震惊转为坚定，镜头急速后拉，展现全景，慢动作，光影对比强烈，粒子特效。",
+        "en": "The protagonist looks down at their hands. Suddenly, the hands begin to emit blue light, which gradually spreads throughout the body. Hair floats up without wind, surrounding debris levitates. The protagonist looks up at the sky, eyes shifting from shock to determination. The camera rapidly pulls back to reveal the全景 (full scene). Slow motion, strong light contrast, particle effects."
+      }
+    }
+  ]
+}

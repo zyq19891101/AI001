@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI短剧提示词 · 中英双语工具</title>
+    <style>
+        /* 全局样式 & 暗黑变量 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Inter', 'Segoe UI', Roboto, sans-serif;
+        }
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-light: #475569;
+            --border: #e2e8f0;
+            --primary: #3b82f6;
+            --primary-light: #dbeafe;
+            --hover: #f1f5f9;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --sidebar-width: 260px;
+        }
+        .dark {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --primary: #60a5fa;
+            --primary-light: #1e3a8a;
+            --hover: #334155;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.2s, color 0.2s;
+            min-height: 100vh;
+            display: flex;
+        }
+        /* 侧边栏 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            transition: transform 0.3s;
+        }
+        .sidebar h2 {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-item {
+            padding: 10px 12px;
+            margin: 4px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-light);
+            transition: 0.1s;
+        }
+        .nav-item:hover {
+            background: var(--hover);
+            color: var(--text);
+        }
+        .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--border);
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+        }
+        /* 主内容区 */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 32px 40px;
+            transition: margin 0.3s;
+        }
+        /* 顶部栏 */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .search-wrapper {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+        .search-wrapper input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        .lang-switch {
+            display: flex;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 4px;
+        }
+        .lang-switch button {
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: 0.2s;
+        }
+        .lang-switch button.active {
+            background: var(--primary);
+            color: white;
+        }
+        .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+        }
+        /* 卡片网格 */
+        .section-title {
+            font-size: 1.5rem;
+            margin: 40px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title button {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .card-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .card-template {
+            background: var(--bg);
+            padding: 16px;
+            border-radius: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--primary);
+            margin: 16px 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            background: transparent;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        .btn:hover {
+            background: var(--hover);
+        }
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: var(--surface);
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+        /* 移动端侧边栏开关 */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 100;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .menu-toggle {
+                display: flex;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+        .highlight {
+            background: #fde047;
+            color: #0f172a;
+            padding: 2px 0;
+            border-radius: 4px;
+        }
+        .dark .highlight {
+            background: #b45309;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <h2>🎬 AI短剧指令包</h2>
+        <div class="nav-item active" data-category="all">
+            <span>📋</span> 全部模板
+            <span class="badge" id="count-all">0</span>
+        </div>
+        <div class="nav-item" data-category="basic_action">
+            <span>🎭</span> 基础动作
+            <span class="badge" id="count-basic">0</span>
+        </div>
+        <div class="nav-item" data-category="storyboard">
+            <span>📖</span> 分镜叙事
+            <span class="badge" id="count-story">0</span>
+        </div>
+        <div class="nav-item" data-category="motion_control">
+            <span>⚙️</span> 动作控制
+            <span class="badge" id="count-motion">0</span>
+        </div>
+        <div class="nav-item" data-category="audio_driven">
+            <span>🎵</span> 音频驱动
+            <span class="badge" id="count-audio">0</span>
+        </div>
+        <div class="nav-item" data-category="examples">
+            <span>🌟</span> 完整示例
+            <span class="badge" id="count-examples">0</span>
+        </div>
+        <div style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px;">
+            <div class="theme-toggle" id="themeToggle">
+                <span>🌓</span> 暗黑模式
+            </div>
+        </div>
+    </aside>
+
+    <!-- 移动端菜单按钮 -->
+    <button class="menu-toggle" id="menuToggle">☰</button>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <div class="toolbar">
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" placeholder="搜索模板、描述或提示词...">
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <div class="lang-switch">
+                    <button data-lang="zh" class="active">中文</button>
+                    <button data-lang="en">EN</button>
+                </div>
+                <button class="btn" id="copyAllBtn" title="复制当前视图所有提示词">📋 复制全部</button>
+            </div>
+        </div>
+
+        <!-- 模板部分 -->
+        <div class="section-title">
+            <span>📌 提示词模板</span>
+            <button id="collapseBtn" title="收起/展开">🔽 收起</button>
+        </div>
+        <div class="grid" id="templateGrid"></div>
+
+        <!-- 示例部分 -->
+        <div class="section-title" style="margin-top: 48px;">
+            <span>✨ 完整示例</span>
+        </div>
+        <div class="grid" id="exampleGrid"></div>
+
+        <!-- 底部留白 -->
+        <div style="height: 40px;"></div>
+    </main>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">✅ 已复制到剪贴板</div>
+
+    <script>
+        // 数据加载和渲染逻辑
+        let promptsData = null;
+        let currentLang = 'zh';
+        let currentCategory = 'all';
+        let searchTerm = '';
+        let darkMode = localStorage.getItem('dark') === 'true';
+
+        // 初始化主题
+        if (darkMode) document.documentElement.classList.add('dark');
+
+        // 加载数据
+        async function loadData() {
+            try {
+                const res = await fetch('prompts.json');
+                promptsData = await res.json();
+                updateCounts();
+                render();
+            } catch (e) {
+                console.error('加载 prompts.json 失败，请确保文件存在', e);
+                // 显示提示信息在页面上
+                document.getElementById('templateGrid').innerHTML = '<div style="grid-column:1/-1; text-align:center; color:red;">❌ 加载 prompts.json 失败，请确认文件是否存在且格式正确。</div>';
+            }
+        }
+
+        // 更新侧边栏数量
+        function updateCounts() {
+            if (!promptsData) return;
+            document.getElementById('count-all').innerText = Object.keys(promptsData.templates).length + promptsData.examples.length;
+            document.getElementById('count-basic').innerText = '1';
+            document.getElementById('count-story').innerText = '1';
+            document.getElementById('count-motion').innerText = '1';
+            document.getElementById('count-audio').innerText = '2'; // 两个子项
+            document.getElementById('count-examples').innerText = promptsData.examples.length;
+        }
+
+        // 渲染网格
+        function render() {
+            if (!promptsData) return;
+
+            const templateGrid = document.getElementById('templateGrid');
+            const exampleGrid = document.getElementById('exampleGrid');
+            templateGrid.innerHTML = '';
+            exampleGrid.innerHTML = '';
+
+            const searchLower = searchTerm.toLowerCase();
+
+            // 辅助高亮函数
+            function highlightText(text) {
+                if (!searchTerm) return text;
+                const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return text.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            // 渲染模板
+            if (currentCategory === 'all' || currentCategory !== 'examples') {
+                const templates = promptsData.templates;
+                for (const [key, tmpl] of Object.entries(templates)) {
+                    if (currentCategory !== 'all' && currentCategory !== key) continue;
+
+                    let title, desc, templateText;
+                    if (key === 'audio_driven') {
+                        // 拆分成两个卡片
+                        const subCards = [
+                            { name: '情绪对口型', zh: tmpl.emotion_lip_sync.zh, en: tmpl.emotion_lip_sync.en },
+                            { name: '音乐卡点', zh: tmpl.music_beat.zh, en: tmpl.music_beat.en }
+                        ];
+                        subCards.forEach((sub, idx) => {
+                            title = currentLang === 'zh' ? `音频驱动 · ${sub.name}` : `Audio · ${sub.name}`;
+                            desc = currentLang === 'zh' ? '根据情绪或音乐节奏生成画面' : 'Generate visuals based on emotion or music';
+                            templateText = currentLang === 'zh' ? sub.zh : sub.en;
+
+                            if (searchTerm && !title.toLowerCase().includes(searchLower) && !desc.toLowerCase().includes(searchLower) && !templateText.toLowerCase().includes(searchLower)) return;
+
+                            const card = createCard(title, desc, templateText, 'audio');
+                            templateGrid.appendChild(card);
+                        });
+                        continue;
+                    }
+
+                    title = currentLang === 'zh' 
+                        ? (key === 'basic_action' ? '基础动作模板' : key === 'storyboard' ? '分镜叙事模板' : key === 'motion_control' ? '动作控制与稳定' : '音频驱动')
+                        : (key === 'basic_action' ? 'Basic Action' : key === 'storyboard' ? 'Storyboard' : key === 'motion_control' ? 'Motion Control' : 'Audio Driven');
+                    desc = currentLang === 'zh' ? tmpl.description.zh : tmpl.description.en;
+                    templateText = currentLang === 'zh' ? (tmpl.template?.zh || '') : (tmpl.template?.en || '');
+
+                    if (searchTerm && !title.toLowerCase().includes(searchLower) && !desc.toLowerCase().includes(searchLower) && !templateText.toLowerCase().includes(searchLower)) continue;
+
+                    const card = createCard(title, desc, templateText, key);
+                    templateGrid.appendChild(card);
+                }
+            }
+
+            // 渲染示例
+            if (currentCategory === 'all' || currentCategory === 'examples') {
+                promptsData.examples.forEach(ex => {
+                    const name = currentLang === 'zh' ? ex.name.zh : ex.name.en;
+                    const imgDesc = currentLang === 'zh' ? ex.upload_image.zh : ex.upload_image.en;
+                    const prompt = currentLang === 'zh' ? ex.prompt.zh : ex.prompt.en;
+                    const desc = `📷 ${imgDesc}`;
+
+                    if (searchTerm && !name.toLowerCase().includes(searchLower) && !desc.toLowerCase().includes(searchLower) && !prompt.toLowerCase().includes(searchLower)) return;
+
+                    const card = createCard(name, desc, prompt, 'example');
+                    exampleGrid.appendChild(card);
+                });
+            }
+        }
+
+        // 创建卡片DOM
+        function createCard(title, desc, templateText, tag) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3>${title}</h3>
+                    <span class="tag">${tag}</span>
+                </div>
+                <div class="card-desc">${desc}</div>
+                <div class="card-template">${templateText.replace(/\n/g, '<br>')}</div>
+                <div class="card-actions">
+                    <button class="btn btn-primary copy-one" data-text="${encodeURIComponent(templateText)}">📋 复制</button>
+                </div>
+            `;
+            return card;
+        }
+
+        // Toast提示
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg || '✅ 已复制';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // 复制文本
+        async function copyText(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('✅ 已复制到剪贴板');
+            } catch {
+                showToast('❌ 复制失败，请手动复制');
+            }
+        }
+
+        // 复制全部
+        function copyAll() {
+            const allText = [];
+            document.querySelectorAll('.card-template').forEach(el => {
+                allText.push(el.innerText);
+            });
+            copyText(allText.join('\n\n---\n\n'));
+        }
+
+        // 事件监听
+        function bindEvents() {
+            // 语言切换
+            document.querySelectorAll('.lang-switch button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentLang = btn.dataset.lang;
+                    render();
+                });
+            });
+
+            // 侧边栏导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                    currentCategory = item.dataset.category;
+                    render();
+                    // 移动端自动关闭侧边栏
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('sidebar').classList.remove('open');
+                    }
+                });
+            });
+
+            // 搜索
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                searchTerm = e.target.value;
+                render();
+            });
+
+            // 复制全部按钮
+            document.getElementById('copyAllBtn').addEventListener('click', copyAll);
+
+            // 卡片内复制按钮（委托）
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('copy-one') || e.target.closest('.copy-one')) {
+                    const btn = e.target.closest('.copy-one');
+                    const text = decodeURIComponent(btn.dataset.text);
+                    copyText(text);
+                }
+            });
+
+            // 主题切换
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                darkMode = !darkMode;
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                localStorage.setItem('dark', darkMode);
+            });
+
+            // 移动端侧边栏开关
+            document.getElementById('menuToggle').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('open');
+            });
+
+            // 收起/展开所有卡片描述（可选）
+            document.getElementById('collapseBtn').addEventListener('click', () => {
+                const templates = document.querySelectorAll('.card-template');
+                templates.forEach(el => {
+                    if (el.style.maxHeight === '60px') {
+                        el.style.maxHeight = '200px';
+                        el.style.overflow = 'auto';
+                    } else {
+                        el.style.maxHeight = '60px';
+                        el.style.overflow = 'hidden';
+                    }
+                });
+            });
+        }
+
+        // 初始化
+        window.onload = () => {
+            loadData();
+            bindEvents();
+        };
+    </script>
+</body>
+</html>
