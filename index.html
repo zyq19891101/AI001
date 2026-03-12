@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AI短剧提示词构建器 · 终极版（带自定义变量）</title>
+    <title>AI短剧提示词构建器 · 多镜头导演版（完整预设）</title>
     <style>
-        /* 样式与上一轮完全一致，为节省篇幅此处省略，实际使用时保留完整样式 */
+        /* 完整样式，与之前一致，此处保留核心 */
         * {
             margin: 0;
             padding: 0;
@@ -14,71 +14,43 @@
         }
         body {
             background: #0b1120;
-            min-height: 100vh;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
         }
         .container {
             max-width: 1400px;
             width: 100%;
             background: #1a2332;
             border-radius: 32px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
             overflow: hidden;
             border: 1px solid #334155;
         }
         .header {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background: #0f172a;
             color: white;
             padding: 24px 32px;
-            border-bottom: 1px solid #334155;
-        }
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .header h1 span {
-            background: #3b82f6;
-            font-size: 0.9rem;
-            padding: 4px 12px;
-            border-radius: 40px;
-            margin-left: 16px;
-        }
-        .header p {
-            color: #94a3b8;
-            font-size: 1rem;
         }
         .toolbar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
             gap: 16px;
+            flex-wrap: wrap;
             margin-top: 20px;
         }
         .lang-switch, .platform-switch {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             background: #1e293b;
             padding: 4px;
             border-radius: 40px;
-            border: 1px solid #334155;
         }
         .lang-btn, .platform-btn {
-            background: transparent;
-            border: none;
-            color: #94a3b8;
             padding: 8px 24px;
             border-radius: 40px;
             cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
+            color: #94a3b8;
+            background: transparent;
+            border: none;
         }
         .lang-btn.active, .platform-btn.active {
             background: #3b82f6;
@@ -92,17 +64,9 @@
         }
         .template-library {
             background: #1e293b;
-            border-radius: 20px;
             padding: 20px;
+            border-radius: 20px;
             margin-bottom: 30px;
-            border: 1px solid #334155;
-        }
-        .template-library h3 {
-            color: #e2e8f0;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .template-buttons {
             display: flex;
@@ -111,130 +75,121 @@
         }
         .template-btn {
             background: #0f172a;
-            border: 1px solid #334155;
             color: #e2e8f0;
             padding: 8px 20px;
             border-radius: 40px;
             cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.9rem;
+            border: 1px solid #334155;
         }
-        .template-btn:hover {
-            background: #2d3a4f;
-            border-color: #3b82f6;
-        }
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+        .shots-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
             margin-bottom: 30px;
         }
-        .option-group {
+        .shot-card {
             background: #1e293b;
             border-radius: 20px;
             padding: 20px;
+            border: 2px solid #3b82f6;
+        }
+        .shot-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .shot-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        .shot-actions button {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .option-group {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 16px;
             border: 1px solid #334155;
         }
         .option-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             color: #e2e8f0;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .option-group select, .option-group input, .option-group textarea {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #334155;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: 0.2s;
-            background: #0f172a;
-            color: #f1f5f9;
-        }
-        .option-group select:focus, .option-group input:focus, .option-group textarea:focus {
-            border-color: #3b82f6;
-        }
-        .option-group select[multiple] {
-            height: 160px;
-            padding: 8px;
-        }
-        .option-group select[multiple] option {
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin: 2px 0;
+            padding: 10px;
             background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            color: #f1f5f9;
+            outline: none;
         }
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 8px;
-            margin-bottom: 8px;
+            gap: 8px;
         }
         .checkbox-group label {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #0f172a;
-            padding: 8px 16px;
-            border-radius: 40px;
-            border: 1px solid #334155;
+            background: #1e293b;
+            padding: 6px 12px;
+            border-radius: 30px;
             font-weight: normal;
             font-size: 0.9rem;
             cursor: pointer;
-        }
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            margin-right: 4px;
+            border: 1px solid #334155;
         }
         .custom-input {
-            margin-top: 12px;
-            padding-top: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px dashed #334155;
         }
         .custom-input input {
-            background: #0f172a;
-            border: 2px solid #3b82f6;
-            border-radius: 40px;
-            padding: 10px 16px;
-            font-size: 0.9rem;
-            color: #f1f5f9;
-            width: 100%;
+            border-color: #3b82f6;
         }
-        .custom-input input::placeholder {
-            color: #64748b;
-            font-style: italic;
+        .add-shot-btn {
+            background: #1e293b;
+            border: 2px dashed #3b82f6;
+            color: #3b82f6;
+            padding: 16px;
+            border-radius: 20px;
+            width: 100%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 20px 0;
         }
         .preview-area {
             background: #0f172a;
-            color: #e2e8f0;
+            border: 2px solid #3b82f6;
             border-radius: 20px;
             padding: 24px;
-            margin: 30px 0 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-break: break-word;
-            min-height: 150px;
-            border: 2px solid #3b82f6;
+            margin: 20px 0;
         }
         .preview-area textarea {
             width: 100%;
             background: transparent;
             border: none;
-            color: inherit;
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
+            color: #e2e8f0;
+            font-family: monospace;
             resize: vertical;
+            min-height: 150px;
             outline: none;
-            min-height: 120px;
         }
         .actions {
             display: flex;
@@ -243,40 +198,24 @@
             flex-wrap: wrap;
         }
         .btn {
-            padding: 14px 32px;
-            border: none;
-            border-radius: 50px;
+            padding: 12px 28px;
+            border-radius: 40px;
             font-weight: 600;
-            font-size: 1rem;
             cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .btn-primary {
             background: #3b82f6;
             color: white;
-            box-shadow: 0 8px 16px rgba(59,130,246,0.3);
-        }
-        .btn-primary:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
+            border: none;
         }
         .btn-secondary {
             background: #1e293b;
             border: 2px solid #3b82f6;
             color: #3b82f6;
         }
-        .btn-secondary:hover {
-            background: #2d3a4f;
-        }
         .footer {
             text-align: center;
-            padding: 24px 32px;
+            padding: 20px;
             background: #0f172a;
             color: #64748b;
-            font-size: 0.9rem;
             border-top: 1px solid #334155;
         }
         .toast {
@@ -285,13 +224,11 @@
             right: 30px;
             background: #1e293b;
             color: white;
-            padding: 14px 28px;
-            border-radius: 50px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            transform: translateY(100px);
-            transition: transform 0.3s;
-            z-index: 1000;
+            padding: 12px 24px;
+            border-radius: 40px;
             border: 1px solid #3b82f6;
+            transform: translateY(100px);
+            transition: 0.3s;
         }
         .toast.show {
             transform: translateY(0);
@@ -299,31 +236,18 @@
         .badge {
             background: #3b82f6;
             color: white;
-            font-size: 0.7rem;
             padding: 2px 8px;
             border-radius: 30px;
+            font-size: 0.7rem;
             margin-left: 8px;
-        }
-        @media (max-width: 600px) {
-            .checkbox-group label {
-                flex: 1 1 auto;
-                justify-content: center;
-            }
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .lang-switch, .platform-switch {
-                justify-content: center;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 AI短剧提示词构建器 · 终极版 <span>v4.0</span></h1>
-            <p>模板库 · 实时预览 · 智能推荐 · 平台适配 · 持久化 · 自定义变量</p>
+            <h1>🎬 AI短剧提示词构建器 · 多镜头导演版 <span class="badge">完整预设</span></h1>
+            <p>每个镜头可独立设置：主体、动作、情绪、风格、特效、物理、运镜、光影、互动、站位、负面词（均有预设+自定义）</p>
             <div class="toolbar">
                 <div class="lang-switch">
                     <button class="lang-btn active" data-lang="zh">中文</button>
@@ -338,8 +262,9 @@
         </div>
 
         <div class="builder-body">
+            <!-- 模板库（一键填充第一个镜头） -->
             <div class="template-library">
-                <h3>📚 场景模板库 <span class="badge">一键填充</span></h3>
+                <h3>📚 场景模板库 <span class="badge">点击填充第一个镜头</span></h3>
                 <div class="template-buttons">
                     <button class="template-btn" data-template="ancient_fight">⚔️ 古风打斗</button>
                     <button class="template-btn" data-template="urban_love">💔 都市虐恋</button>
@@ -352,123 +277,38 @@
                 </div>
             </div>
 
-            <div class="options-grid">
-                <!-- 主体描述 -->
-                <div class="option-group">
-                    <label>🧑 主体描述 <span class="badge">必填</span></label>
-                    <textarea id="subject" rows="2" placeholder="例如：一个穿红色风衣的银发机械姬 / 两个武士在竹林中对峙"></textarea>
-                </div>
+            <!-- 镜头容器 -->
+            <div id="shotsContainer" class="shots-container"></div>
+            <button class="add-shot-btn" id="addShotBtn">➕ 添加新镜头</button>
 
-                <!-- 动作 (复选框) -->
-                <div class="option-group">
-                    <label>🏃 动作 (可多选)</label>
-                    <div class="checkbox-group" id="actionGroup"></div>
-                    <div class="custom-input">
-                        <input type="text" id="actionCustom" placeholder="自定义动作 (例如：空中翻腾三周半)">
-                    </div>
-                </div>
-
-                <!-- 情绪/微表情 -->
-                <div class="option-group">
-                    <label>😊 情绪/微表情</label>
-                    <select id="emotion"></select>
-                    <div class="custom-input">
-                        <input type="text" id="emotionCustom" placeholder="自定义情绪 (例如：似笑非笑的诡异表情)">
-                    </div>
-                </div>
-
-                <!-- 风格库 -->
-                <div class="option-group">
-                    <label>🎨 电影/动漫风格</label>
-                    <select id="style"></select>
-                    <div class="custom-input">
-                        <input type="text" id="styleCustom" placeholder="自定义风格 (例如：蒸汽波美学)">
-                    </div>
-                </div>
-
-                <!-- 特效库 -->
-                <div class="option-group">
-                    <label>✨ 特效类型</label>
-                    <select id="effect"></select>
-                    <div class="custom-input">
-                        <input type="text" id="effectCustom" placeholder="自定义特效 (例如：全息投影效果)">
-                    </div>
-                </div>
-
-                <!-- 物理属性 -->
-                <div class="option-group">
-                    <label>⚡ 物理/运动属性</label>
-                    <select id="physics"></select>
-                    <div class="custom-input">
-                        <input type="text" id="physicsCustom" placeholder="自定义物理 (例如：子弹时间)">
-                    </div>
-                </div>
-
-                <!-- 运镜方式 -->
-                <div class="option-group">
-                    <label>🎥 运镜方式</label>
-                    <select id="camera"></select>
-                    <div class="custom-input">
-                        <input type="text" id="cameraCustom" placeholder="自定义运镜 (例如：穿越机第一视角)">
-                    </div>
-                </div>
-
-                <!-- 光影氛围 -->
-                <div class="option-group">
-                    <label>☀️ 光影氛围</label>
-                    <select id="lighting"></select>
-                    <div class="custom-input">
-                        <input type="text" id="lightingCustom" placeholder="自定义光影 (例如：极光反射)">
-                    </div>
-                </div>
-
-                <!-- 与背景互动 -->
-                <div class="option-group">
-                    <label>🌳 与背景互动</label>
-                    <select id="interaction"></select>
-                    <div class="custom-input">
-                        <input type="text" id="interactionCustom" placeholder="自定义互动 (例如：脚印在雪地上逐渐消失)">
-                    </div>
-                </div>
-
-                <!-- 负面提示词 (多选) -->
-                <div class="option-group">
-                    <label>⚠️ 负面提示词 (可多选)</label>
-                    <div class="checkbox-group" id="negativeGroup"></div>
-                    <div class="custom-input">
-                        <input type="text" id="negativeCustom" placeholder="自定义负面词 (例如：不对称的脸)">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 预览区 (可编辑) -->
+            <!-- 预览区 -->
             <div class="preview-area">
-                <textarea id="preview" placeholder="生成的提示词将显示在这里，您可以直接编辑..."></textarea>
+                <textarea id="preview" placeholder="生成的提示词将显示在这里..."></textarea>
             </div>
 
             <div class="actions">
-                <button class="btn btn-secondary" id="saveConfigBtn">💾 保存当前配置</button>
+                <button class="btn btn-secondary" id="saveConfigBtn">💾 保存配置</button>
                 <button class="btn btn-secondary" id="loadConfigBtn">📂 加载已保存</button>
-                <button class="btn btn-secondary" id="clearBtn">🧹 清空选项</button>
-                <button class="btn btn-primary" id="copyBtn">📋 复制提示词</button>
+                <button class="btn btn-secondary" id="clearBtn">🧹 清空所有</button>
+                <button class="btn" id="copyBtn">📋 复制提示词</button>
             </div>
         </div>
 
-        <div class="footer">
-            ⚡ 终极版 v4.0 · 每个选项均可自定义 · 无限可能
-        </div>
+        <div class="footer">⚡ 所有选项均有预设，也可自定义输入</div>
     </div>
 
     <div class="toast" id="toast">✅ 已复制</div>
 
     <script>
         (function() {
-            // ---------- 全局变量 ----------
             let currentLang = 'zh';
             let currentPlatform = '通用';
             const toast = document.getElementById('toast');
+            let shotCounter = 0;
+            const shotsContainer = document.getElementById('shotsContainer');
+            const previewTextarea = document.getElementById('preview');
 
-            // ---------- 数据定义 ----------
+            // ---------- 完整预设数据 ----------
             const optionData = {
                 action: [
                     { value: 'slowly turn', zh: '缓缓转身', en: 'slowly turn' },
@@ -504,71 +344,71 @@
                 ],
                 style: [
                     { group: '🎬 电影风格', value: 'cinematic', zh: '电影质感', en: 'cinematic' },
-                    { group: '🎬 电影风格', value: 'hollywood', zh: '好莱坞大片质感', en: 'Hollywood blockbuster quality' },
-                    { group: '🎬 电影风格', value: 'noir', zh: '黑色电影，高对比光影', en: 'film noir, high contrast' },
-                    { group: '🎬 电影风格', value: 'vintage', zh: '复古胶片质感', en: 'vintage film grain' },
+                    { group: '🎬 电影风格', value: 'hollywood', zh: '好莱坞大片质感', en: 'Hollywood blockbuster' },
+                    { group: '🎬 电影风格', value: 'noir', zh: '黑色电影，高对比', en: 'film noir, high contrast' },
+                    { group: '🎬 电影风格', value: 'vintage', zh: '复古胶片', en: 'vintage film grain' },
                     { group: '🎬 电影风格', value: 'documentary', zh: '纪录片真实感', en: 'documentary realism' },
                     { group: '🎬 电影风格', value: 'sci-fi', zh: '科幻电影，未来感', en: 'sci-fi, futuristic' },
-                    { group: '📺 动漫风格', value: 'anime', zh: '日式动漫风格', en: 'anime style' },
-                    { group: '📺 动漫风格', value: 'ghibli', zh: '吉卜力风格，手绘感', en: 'Ghibli style, hand-drawn' },
+                    { group: '📺 动漫风格', value: 'anime', zh: '日式动漫', en: 'anime style' },
+                    { group: '📺 动漫风格', value: 'ghibli', zh: '吉卜力风，手绘感', en: 'Ghibli style, hand-drawn' },
                     { group: '📺 动漫风格', value: 'shonen', zh: '少年热血动漫', en: 'shonen anime, dynamic' },
-                    { group: '📺 动漫风格', value: 'chibi', zh: 'Q版可爱风格', en: 'chibi, cute style' },
+                    { group: '📺 动漫风格', value: 'chibi', zh: 'Q版可爱风格', en: 'chibi, cute' },
                     { group: '📺 动漫风格', value: 'cyberpunk', zh: '赛博朋克动漫', en: 'cyberpunk anime' },
-                    { group: '📺 动漫风格', value: 'mecha', zh: '机甲动漫风格', en: 'mecha anime' },
-                    { group: '🖌️ 艺术风格', value: 'watercolor', zh: '水彩画质感', en: 'watercolor style' },
-                    { group: '🖌️ 艺术风格', value: 'oil', zh: '油画质感', en: 'oil painting texture' },
-                    { group: '🖌️ 艺术风格', value: 'ink', zh: '水墨画风格', en: 'ink wash style' },
-                    { group: '🖌️ 艺术风格', value: 'pixel', zh: '像素风', en: 'pixel art style' },
-                    { group: '🖌️ 艺术风格', value: '3d', zh: '3D动画渲染', en: '3D animation render' },
-                    { group: '🖌️ 艺术风格', value: 'clay', zh: '黏土动画风格', en: 'clay animation' }
+                    { group: '📺 动漫风格', value: 'mecha', zh: '机甲动漫', en: 'mecha anime' },
+                    { group: '🖌️ 艺术风格', value: 'watercolor', zh: '水彩画', en: 'watercolor' },
+                    { group: '🖌️ 艺术风格', value: 'oil', zh: '油画', en: 'oil painting' },
+                    { group: '🖌️ 艺术风格', value: 'ink', zh: '水墨画', en: 'ink wash' },
+                    { group: '🖌️ 艺术风格', value: 'pixel', zh: '像素风', en: 'pixel art' },
+                    { group: '🖌️ 艺术风格', value: '3d', zh: '3D动画', en: '3D animation' },
+                    { group: '🖌️ 艺术风格', value: 'clay', zh: '黏土动画', en: 'clay animation' }
                 ],
                 effect: [
-                    { value: 'particle', zh: '粒子特效，光点飘散', en: 'particle effects, floating lights' },
-                    { value: 'glow', zh: '发光特效，光晕', en: 'glow effect, light bloom' },
-                    { value: 'fire', zh: '火焰特效', en: 'fire effects, flames' },
-                    { value: 'electric', zh: '电流/雷电特效', en: 'electricity, lightning' },
+                    { value: 'particle', zh: '粒子特效，光点飘散', en: 'particle effects' },
+                    { value: 'glow', zh: '发光特效，光晕', en: 'glow effect' },
+                    { value: 'fire', zh: '火焰特效', en: 'fire effects' },
+                    { value: 'electric', zh: '电流/雷电', en: 'electricity, lightning' },
                     { value: 'smoke', zh: '烟雾/雾气', en: 'smoke, mist' },
-                    { value: 'water', zh: '水花/波浪特效', en: 'water splash, waves' },
-                    { value: 'magic', zh: '魔法光效', en: 'magic light effects' },
-                    { value: 'glitch', zh: '故障艺术特效', en: 'glitch art effect' },
+                    { value: 'water', zh: '水花/波浪', en: 'water splash' },
+                    { value: 'magic', zh: '魔法光效', en: 'magic light' },
+                    { value: 'glitch', zh: '故障艺术', en: 'glitch art' },
                     { value: 'lens flare', zh: '镜头光晕', en: 'lens flare' },
-                    { value: 'bloom', zh: '泛光效果', en: 'bloom effect' }
+                    { value: 'bloom', zh: '泛光效果', en: 'bloom' }
                 ],
                 physics: [
-                    { value: 'slow motion', zh: '慢动作效果', en: 'slow motion' },
+                    { value: 'slow motion', zh: '慢动作', en: 'slow motion' },
                     { value: 'timelapse', zh: '延时摄影', en: 'timelapse' },
-                    { value: 'gravity', zh: '真实重力物理', en: 'realistic gravity physics' },
-                    { value: 'zero gravity', zh: '零重力漂浮', en: 'zero gravity floating' },
-                    { value: 'weightless', zh: '失重效果', en: 'weightless' },
+                    { value: 'gravity', zh: '真实重力', en: 'realistic gravity' },
+                    { value: 'zero gravity', zh: '零重力', en: 'zero gravity' },
+                    { value: 'weightless', zh: '失重', en: 'weightless' },
                     { value: 'inertia', zh: '惯性真实感', en: 'realistic inertia' },
-                    { value: 'cloth sim', zh: '布料物理模拟', en: 'cloth physics simulation' },
-                    { value: 'hair sim', zh: '毛发物理模拟', en: 'hair physics simulation' }
+                    { value: 'cloth sim', zh: '布料物理', en: 'cloth physics' },
+                    { value: 'hair sim', zh: '毛发物理', en: 'hair physics' }
                 ],
                 camera: [
-                    { value: 'push in', zh: '镜头缓慢推近，聚焦脸部', en: 'slow push-in, focus on face' },
-                    { value: 'pull out', zh: '镜头快速后拉，展现全景', en: 'fast pull-out, reveal full scene' },
-                    { value: 'orbit', zh: '环绕360度拍摄', en: '360° orbit' },
-                    { value: 'follow', zh: '跟随人物移动', en: 'follow the subject' },
+                    { value: 'push in', zh: '推近，聚焦脸部', en: 'push in, focus on face' },
+                    { value: 'pull out', zh: '后拉，展现全景', en: 'pull out, reveal full scene' },
+                    { value: 'orbit', zh: '环绕360度', en: '360° orbit' },
+                    { value: 'follow', zh: '跟随移动', en: 'follow the subject' },
                     { value: 'low angle', zh: '低角度仰拍', en: 'low-angle shot' },
                     { value: 'high angle', zh: '高角度俯拍', en: 'high-angle shot' },
                     { value: 'first person', zh: '第一人称视角', en: 'first-person view' },
-                    { value: 'drone', zh: '无人机航拍视角', en: 'drone aerial view' },
-                    { value: 'handheld', zh: '手持镜头轻微晃动', en: 'handheld slight shake' },
+                    { value: 'drone', zh: '无人机航拍', en: 'drone aerial view' },
+                    { value: 'handheld', zh: '手持轻微晃动', en: 'handheld slight shake' },
                     { value: 'steadicam', zh: '斯坦尼康稳定跟拍', en: 'Steadicam smooth follow' }
                 ],
                 lighting: [
                     { value: 'golden hour', zh: '黄金时刻，夕阳暖光', en: 'golden hour, warm sunset' },
                     { value: 'blue hour', zh: '蓝色时刻，冷色调', en: 'blue hour, cold tones' },
-                    { value: 'neon', zh: '霓虹灯光，赛博朋克', en: 'neon lights, cyberpunk' },
+                    { value: 'neon', zh: '霓虹灯光', en: 'neon lights' },
                     { value: 'high contrast', zh: '高对比，强光影', en: 'high contrast, strong shadows' },
                     { value: 'soft', zh: '柔和光，浅景深', en: 'soft light, shallow depth' },
-                    { value: 'volumetric', zh: '体积光，丁达尔效应', en: 'volumetric lighting, Tyndall' },
-                    { value: 'backlight', zh: '逆光，剪影效果', en: 'backlight, silhouette' },
+                    { value: 'volumetric', zh: '体积光，丁达尔效应', en: 'volumetric lighting' },
+                    { value: 'backlight', zh: '逆光，剪影', en: 'backlight, silhouette' },
                     { value: 'studio', zh: '摄影棚布光', en: 'studio lighting' },
-                    { value: 'moody', zh: '忧郁氛围暗调', en: 'moody, dark tones' }
+                    { value: 'moody', zh: '忧郁暗调', en: 'moody, dark tones' }
                 ],
                 interaction: [
-                    { value: 'touch', zh: '伸手触碰路边的樱花树', en: 'reach out to touch cherry blossoms' },
+                    { value: 'touch', zh: '伸手触碰樱花树', en: 'reach out to touch cherry blossoms' },
                     { value: 'rain', zh: '雨水顺着脸颊流下', en: 'rain streaming down face' },
                     { value: 'leaves', zh: '脚踩落叶沙沙作响', en: 'footsteps on fallen leaves' },
                     { value: 'wind', zh: '风吹动发梢', en: 'wind blowing hair' },
@@ -576,6 +416,19 @@
                     { value: 'wall', zh: '倚靠在墙边', en: 'leaning against the wall' },
                     { value: 'water', zh: '水面倒影', en: 'reflection on water' },
                     { value: 'fog', zh: '雾气缭绕', en: 'surrounded by fog' }
+                ],
+                position: [
+                    { value: 'close-up', zh: '特写', en: 'close-up' },
+                    { value: 'medium', zh: '中景', en: 'medium shot' },
+                    { value: 'full', zh: '全景', en: 'full shot' },
+                    { value: 'wide', zh: '远景', en: 'wide shot' },
+                    { value: 'two-shot', zh: '双人镜头', en: 'two-shot' },
+                    { value: 'over-shoulder', zh: '过肩镜头', en: 'over-the-shoulder' },
+                    { value: 'low-angle', zh: '低角度仰拍', en: 'low-angle shot' },
+                    { value: 'high-angle', zh: '高角度俯拍', en: 'high-angle shot' },
+                    { value: 'dutch', zh: '倾斜构图', en: 'dutch angle' },
+                    { value: 'symmetrical', zh: '对称构图', en: 'symmetrical composition' },
+                    { value: 'rule-of-thirds', zh: '三分法构图', en: 'rule of thirds' }
                 ],
                 negative: [
                     { value: 'blurry', zh: '模糊不清', en: 'blurry' },
@@ -589,6 +442,7 @@
                 ]
             };
 
+            // 模板数据（完整）
             const templates = {
                 ancient_fight: {
                     subject: { zh: '两个古装侠客在竹林中对峙', en: 'two ancient warriors confronting in a bamboo forest' },
@@ -600,6 +454,7 @@
                     camera: 'orbit',
                     lighting: 'volumetric',
                     interaction: 'leaves',
+                    position: 'two-shot',
                     negative: ['blurry', 'distorted face']
                 },
                 urban_love: {
@@ -612,6 +467,7 @@
                     camera: 'push in',
                     lighting: 'blue hour',
                     interaction: 'rain',
+                    position: 'medium',
                     negative: ['extra limbs', 'flickering']
                 },
                 scifi_awakening: {
@@ -624,10 +480,11 @@
                     camera: 'pull out',
                     lighting: 'neon',
                     interaction: 'ruins',
+                    position: 'wide',
                     negative: ['blurry', 'morphing']
                 },
                 fantasy_magic: {
-                    subject: { zh: '一个魔法师在古堡前施法', en: 'a wizard casting spell in front of an ancient castle' },
+                    subject: { zh: '一个魔法师在古堡前施法', en: 'a wizard casting spell' },
                     action: ['wave'],
                     emotion: 'determined',
                     style: 'anime',
@@ -636,6 +493,7 @@
                     camera: 'low angle',
                     lighting: 'volumetric',
                     interaction: 'fog',
+                    position: 'low-angle',
                     negative: ['distorted face']
                 },
                 horror_escape: {
@@ -648,6 +506,7 @@
                     camera: 'handheld',
                     lighting: 'moody',
                     interaction: 'fog',
+                    position: 'dutch',
                     negative: ['flickering']
                 },
                 comedy_slapstick: {
@@ -660,10 +519,11 @@
                     camera: 'follow',
                     lighting: 'soft',
                     interaction: '',
+                    position: 'medium',
                     negative: ['distorted face']
                 },
                 historical_epic: {
-                    subject: { zh: '千军万马在草原上冲锋', en: 'thousands of cavalry charging on the grassland' },
+                    subject: { zh: '千军万马在草原上冲锋', en: 'thousands of cavalry charging' },
                     action: ['run'],
                     emotion: 'determined',
                     style: 'cinematic',
@@ -672,10 +532,11 @@
                     camera: 'drone',
                     lighting: 'golden hour',
                     interaction: '',
+                    position: 'wide',
                     negative: ['blurry']
                 },
                 mecha_battle: {
-                    subject: { zh: '两个巨大机甲在城市中激战', en: 'two giant mechas fighting in the city' },
+                    subject: { zh: '两个巨大机甲在城市中激战', en: 'two giant mechas fighting' },
                     action: ['fight', 'explode'],
                     emotion: 'angry',
                     style: 'mecha',
@@ -684,541 +545,471 @@
                     camera: 'low angle',
                     lighting: 'high contrast',
                     interaction: 'ruins',
+                    position: 'two-shot',
                     negative: ['distorted face', 'morphing']
                 }
             };
 
-            // ---------- 初始化UI ----------
-            function populateSelect(selectId, data, hasGroups = false) {
-                const select = document.getElementById(selectId);
-                select.innerHTML = '<option value="">-- 请选择 --</option>';
-                if (hasGroups) {
-                    const groups = {};
-                    data.forEach(item => {
-                        if (!groups[item.group]) groups[item.group] = [];
-                        groups[item.group].push(item);
-                    });
-                    for (let group in groups) {
-                        const optgroup = document.createElement('optgroup');
-                        optgroup.label = group;
-                        groups[group].forEach(item => {
-                            const option = document.createElement('option');
-                            option.value = item.value;
-                            option.setAttribute('data-zh', item.zh);
-                            option.setAttribute('data-en', item.en);
-                            option.textContent = currentLang === 'zh' ? item.zh : item.en;
-                            optgroup.appendChild(option);
-                        });
-                        select.appendChild(optgroup);
-                    }
-                } else {
-                    data.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item.value;
-                        option.setAttribute('data-zh', item.zh);
-                        option.setAttribute('data-en', item.en);
-                        option.textContent = currentLang === 'zh' ? item.zh : item.en;
-                        select.appendChild(option);
-                    });
-                }
-            }
-
-            function populateCheckbox(containerId, data, selectedValues = []) {
-                const container = document.getElementById(containerId);
-                container.innerHTML = '';
-                data.forEach(item => {
-                    const label = document.createElement('label');
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.value = item.value;
-                    checkbox.setAttribute('data-zh', item.zh);
-                    checkbox.setAttribute('data-en', item.en);
-                    if (selectedValues.includes(item.value)) checkbox.checked = true;
-                    checkbox.addEventListener('change', () => {
-                        updatePreview();
-                        saveToLocalStorage();
-                    });
-                    label.appendChild(checkbox);
-                    label.appendChild(document.createTextNode(currentLang === 'zh' ? item.zh : item.en));
-                    container.appendChild(label);
-                });
-            }
-
-            function initOptions() {
-                populateCheckbox('actionGroup', optionData.action);
-                populateSelect('emotion', optionData.emotion);
-                populateSelect('style', optionData.style, true);
-                populateSelect('effect', optionData.effect);
-                populateSelect('physics', optionData.physics);
-                populateSelect('camera', optionData.camera);
-                populateSelect('lighting', optionData.lighting);
-                populateSelect('interaction', optionData.interaction);
-                populateCheckbox('negativeGroup', optionData.negative);
-            }
-
-            function updateAllLang() {
-                // 更新复选框文本
-                document.querySelectorAll('#actionGroup label').forEach(label => {
-                    const checkbox = label.querySelector('input');
-                    const value = checkbox.value;
-                    const item = optionData.action.find(i => i.value === value);
-                    if (item) {
-                        label.childNodes[1].nodeValue = currentLang === 'zh' ? item.zh : item.en;
-                    }
-                });
-                document.querySelectorAll('#negativeGroup label').forEach(label => {
-                    const checkbox = label.querySelector('input');
-                    const value = checkbox.value;
-                    const item = optionData.negative.find(i => i.value === value);
-                    if (item) {
-                        label.childNodes[1].nodeValue = currentLang === 'zh' ? item.zh : item.en;
-                    }
-                });
-                // 更新select
-                ['emotion', 'style', 'effect', 'physics', 'camera', 'lighting', 'interaction'].forEach(id => {
-                    const select = document.getElementById(id);
-                    Array.from(select.options).forEach(option => {
-                        if (option.value) {
-                            const zh = option.getAttribute('data-zh');
-                            const en = option.getAttribute('data-en');
-                            option.textContent = currentLang === 'zh' ? zh : en;
-                        }
-                    });
-                });
-                // 主体占位符
-                const subject = document.getElementById('subject');
-                subject.placeholder = currentLang === 'zh' ? '例如：一个穿红色风衣的银发机械姬 / 两个武士在竹林中对峙' : 'e.g., a silver-haired cyborg in red trench coat / two warriors confronting';
-            }
-
-            // ---------- 获取选中值和自定义值 ----------
-            function getSelectedCheckboxValues(containerId) {
-                const checkboxes = document.querySelectorAll(`#${containerId} input:checked`);
-                return Array.from(checkboxes).map(cb => cb.value);
-            }
-
-            function getSelectedText(selectElement) {
-                const selectedOption = selectElement.options[selectElement.selectedIndex];
-                if (!selectedOption || !selectedOption.value) return '';
-                return currentLang === 'zh' ? selectedOption.getAttribute('data-zh') : selectedOption.getAttribute('data-en');
-            }
-
-            function getCustomValue(inputId) {
-                const input = document.getElementById(inputId);
-                return input ? input.value.trim() : '';
-            }
-
-            // 合并列表项和自定义
-            function mergeWithCustom(selectedItems, customValue, lang = currentLang) {
-                let texts = selectedItems.map(v => {
-                    const item = optionData.action.find(i => i.value === v) || optionData.negative.find(i => i.value === v);
-                    return item ? (lang === 'zh' ? item.zh : item.en) : '';
-                }).filter(t => t);
-                if (customValue) texts.push(customValue);
-                return texts.join('，');
-            }
-
-            // 对于单一下拉，返回选中文本 + 自定义
-            function getDropdownWithCustom(selectId, customId) {
-                const select = document.getElementById(selectId);
-                const selectedText = getSelectedText(select);
-                const custom = getCustomValue(customId);
-                if (selectedText && custom) return selectedText + '，' + custom;
-                if (selectedText) return selectedText;
-                if (custom) return custom;
-                return '';
-            }
-
-            // ---------- 生成提示词 ----------
-            function generatePrompt() {
-                const subject = document.getElementById('subject').value.trim();
-
-                // 动作
-                const actionVals = getSelectedCheckboxValues('actionGroup');
-                const actionCustom = getCustomValue('actionCustom');
-                const actionText = mergeWithCustom(actionVals, actionCustom, currentLang);
-
-                // 情绪
-                const emotionText = getDropdownWithCustom('emotion', 'emotionCustom');
-                
-                // 风格
-                const styleText = getDropdownWithCustom('style', 'styleCustom');
-
-                // 特效
-                const effectText = getDropdownWithCustom('effect', 'effectCustom');
-
-                // 物理
-                const physicsText = getDropdownWithCustom('physics', 'physicsCustom');
-
-                // 运镜
-                const cameraText = getDropdownWithCustom('camera', 'cameraCustom');
-
-                // 光影
-                const lightingText = getDropdownWithCustom('lighting', 'lightingCustom');
-
-                // 互动
-                const interactionText = getDropdownWithCustom('interaction', 'interactionCustom');
-
-                // 负面
-                const negativeVals = getSelectedCheckboxValues('negativeGroup');
-                const negativeCustom = getCustomValue('negativeCustom');
-                const negativeTexts = [];
-                negativeVals.forEach(v => {
-                    const item = optionData.negative.find(i => i.value === v);
-                    if (item) negativeTexts.push(currentLang === 'zh' ? item.zh : item.en);
-                });
-                if (negativeCustom) negativeTexts.push(negativeCustom);
-                const negativeJoined = negativeTexts.join('，');
-
-                // 构建正向提示词
-                let parts = [];
-                if (subject) parts.push(subject);
-                if (actionText) parts.push(actionText);
-                if (emotionText) parts.push(emotionText);
-                if (interactionText) parts.push(interactionText);
-                if (cameraText) parts.push(cameraText);
-                if (lightingText) parts.push(lightingText);
-                if (styleText) parts.push(styleText);
-                if (effectText) parts.push(effectText);
-                if (physicsText) parts.push(physicsText);
-
-                let prompt = parts.join('，');
-
-                // 根据平台添加负面提示词
-                if (negativeTexts.length) {
-                    if (currentPlatform === 'midjourney') {
-                        prompt += ' --no ' + negativeTexts.join(', ');
-                    } else if (currentPlatform === 'stable diffusion') {
-                        prompt += ' negative prompt: ' + negativeJoined;
-                    } else {
-                        prompt += '，避免' + negativeJoined;
-                    }
-                }
-
-                return prompt || (currentLang === 'zh' ? '请至少填写主体描述' : 'Please fill in at least the subject');
-            }
-
-            function updatePreview() {
-                const preview = document.getElementById('preview');
-                preview.value = generatePrompt();
-            }
-
-            function saveToLocalStorage() {
-                const config = {
-                    subject: document.getElementById('subject').value,
-                    action: getSelectedCheckboxValues('actionGroup'),
-                    actionCustom: getCustomValue('actionCustom'),
-                    emotion: document.getElementById('emotion').value,
-                    emotionCustom: getCustomValue('emotionCustom'),
-                    style: document.getElementById('style').value,
-                    styleCustom: getCustomValue('styleCustom'),
-                    effect: document.getElementById('effect').value,
-                    effectCustom: getCustomValue('effectCustom'),
-                    physics: document.getElementById('physics').value,
-                    physicsCustom: getCustomValue('physicsCustom'),
-                    camera: document.getElementById('camera').value,
-                    cameraCustom: getCustomValue('cameraCustom'),
-                    lighting: document.getElementById('lighting').value,
-                    lightingCustom: getCustomValue('lightingCustom'),
-                    interaction: document.getElementById('interaction').value,
-                    interactionCustom: getCustomValue('interactionCustom'),
-                    negative: getSelectedCheckboxValues('negativeGroup'),
-                    negativeCustom: getCustomValue('negativeCustom')
-                };
-                localStorage.setItem('promptBuilderConfig', JSON.stringify(config));
-                showToast(currentLang === 'zh' ? '配置已保存' : 'Config saved');
-            }
-
-            function loadFromLocalStorage() {
-                const saved = localStorage.getItem('promptBuilderConfig');
-                if (!saved) {
-                    showToast(currentLang === 'zh' ? '无保存的配置' : 'No saved config');
-                    return;
-                }
-                try {
-                    const config = JSON.parse(saved);
-                    document.getElementById('subject').value = config.subject || '';
-                    
-                    document.querySelectorAll('#actionGroup input').forEach(cb => cb.checked = false);
-                    if (config.action) {
-                        config.action.forEach(val => {
-                            const cb = document.querySelector(`#actionGroup input[value="${val}"]`);
-                            if (cb) cb.checked = true;
-                        });
-                    }
-                    document.getElementById('actionCustom').value = config.actionCustom || '';
-
-                    document.getElementById('emotion').value = config.emotion || '';
-                    document.getElementById('emotionCustom').value = config.emotionCustom || '';
-
-                    document.getElementById('style').value = config.style || '';
-                    document.getElementById('styleCustom').value = config.styleCustom || '';
-
-                    document.getElementById('effect').value = config.effect || '';
-                    document.getElementById('effectCustom').value = config.effectCustom || '';
-
-                    document.getElementById('physics').value = config.physics || '';
-                    document.getElementById('physicsCustom').value = config.physicsCustom || '';
-
-                    document.getElementById('camera').value = config.camera || '';
-                    document.getElementById('cameraCustom').value = config.cameraCustom || '';
-
-                    document.getElementById('lighting').value = config.lighting || '';
-                    document.getElementById('lightingCustom').value = config.lightingCustom || '';
-
-                    document.getElementById('interaction').value = config.interaction || '';
-                    document.getElementById('interactionCustom').value = config.interactionCustom || '';
-
-                    document.querySelectorAll('#negativeGroup input').forEach(cb => cb.checked = false);
-                    if (config.negative) {
-                        config.negative.forEach(val => {
-                            const cb = document.querySelector(`#negativeGroup input[value="${val}"]`);
-                            if (cb) cb.checked = true;
-                        });
-                    }
-                    document.getElementById('negativeCustom').value = config.negativeCustom || '';
-
-                    updatePreview();
-                    showToast(currentLang === 'zh' ? '配置已加载' : 'Config loaded');
-                } catch (e) {
-                    showToast('加载失败');
-                }
-            }
-
-            function clearAll() {
-                document.getElementById('subject').value = '';
-                document.querySelectorAll('#actionGroup input').forEach(cb => cb.checked = false);
-                document.getElementById('actionCustom').value = '';
-                document.getElementById('emotion').value = '';
-                document.getElementById('emotionCustom').value = '';
-                document.getElementById('style').value = '';
-                document.getElementById('styleCustom').value = '';
-                document.getElementById('effect').value = '';
-                document.getElementById('effectCustom').value = '';
-                document.getElementById('physics').value = '';
-                document.getElementById('physicsCustom').value = '';
-                document.getElementById('camera').value = '';
-                document.getElementById('cameraCustom').value = '';
-                document.getElementById('lighting').value = '';
-                document.getElementById('lightingCustom').value = '';
-                document.getElementById('interaction').value = '';
-                document.getElementById('interactionCustom').value = '';
-                document.querySelectorAll('#negativeGroup input').forEach(cb => cb.checked = false);
-                document.getElementById('negativeCustom').value = '';
-                updatePreview();
-                saveToLocalStorage();
-            }
-
-            function applyTemplate(templateName) {
-                const tmpl = templates[templateName];
-                if (!tmpl) return;
-
-                document.getElementById('subject').value = currentLang === 'zh' ? tmpl.subject.zh : tmpl.subject.en;
-
-                document.querySelectorAll('#actionGroup input').forEach(cb => cb.checked = false);
-                if (tmpl.action) {
-                    tmpl.action.forEach(val => {
-                        const cb = document.querySelector(`#actionGroup input[value="${val}"]`);
-                        if (cb) cb.checked = true;
-                    });
-                }
-                document.getElementById('actionCustom').value = '';
-
-                document.getElementById('emotion').value = tmpl.emotion || '';
-                document.getElementById('emotionCustom').value = '';
-
-                document.getElementById('style').value = tmpl.style || '';
-                document.getElementById('styleCustom').value = '';
-
-                document.getElementById('effect').value = tmpl.effect || '';
-                document.getElementById('effectCustom').value = '';
-
-                document.getElementById('physics').value = tmpl.physics || '';
-                document.getElementById('physicsCustom').value = '';
-
-                document.getElementById('camera').value = tmpl.camera || '';
-                document.getElementById('cameraCustom').value = '';
-
-                document.getElementById('lighting').value = tmpl.lighting || '';
-                document.getElementById('lightingCustom').value = '';
-
-                document.getElementById('interaction').value = tmpl.interaction || '';
-                document.getElementById('interactionCustom').value = '';
-
-                document.querySelectorAll('#negativeGroup input').forEach(cb => cb.checked = false);
-                if (tmpl.negative) {
-                    tmpl.negative.forEach(val => {
-                        const cb = document.querySelector(`#negativeGroup input[value="${val}"]`);
-                        if (cb) cb.checked = true;
-                    });
-                }
-                document.getElementById('negativeCustom').value = '';
-
-                updatePreview();
-                saveToLocalStorage();
-                showToast(currentLang === 'zh' ? '模板已应用' : 'Template applied');
-            }
-
-            async function copyPrompt() {
-                const text = document.getElementById('preview').value;
-                if (!text || text.includes('请至少填写') || text.includes('Please fill')) {
-                    alert(currentLang === 'zh' ? '请先生成有效的提示词' : 'Please generate a valid prompt first');
-                    return;
-                }
-                try {
-                    await navigator.clipboard.writeText(text);
-                    showToast(currentLang === 'zh' ? '✅ 已复制到剪贴板' : '✅ Copied to clipboard');
-                } catch {
-                    alert(currentLang === 'zh' ? '复制失败，请手动复制' : 'Copy failed, please copy manually');
-                }
-            }
-
+            // ---------- 辅助函数 ----------
             function showToast(msg) {
                 toast.textContent = msg;
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2000);
             }
 
-            function applyRecommendations() {
-                const style = document.getElementById('style').value;
-                if (!style) return;
-                const recommendations = {
-                    'cyberpunk': { effect: 'glow', lighting: 'neon' },
-                    'sci-fi': { effect: 'glow', lighting: 'neon' },
-                    'anime': { effect: 'particle', lighting: 'soft' },
-                    'ghibli': { effect: 'particle', lighting: 'golden hour' },
-                    'mecha': { effect: 'fire', lighting: 'high contrast' },
-                    'noir': { lighting: 'moody' }
+            // 创建镜头卡片（完整版）
+            function createShotCard(shotId, shotData = {}) {
+                const card = document.createElement('div');
+                card.className = 'shot-card';
+                card.dataset.shotId = shotId;
+
+                // 头部
+                const header = document.createElement('div');
+                header.className = 'shot-header';
+                header.innerHTML = `
+                    <span class="shot-title">🎬 镜头 ${shotId}</span>
+                    <div class="shot-actions">
+                        <button class="copy-shot-btn">📋 复制</button>
+                        <button class="delete-shot-btn">🗑️ 删除</button>
+                    </div>
+                `;
+                card.appendChild(header);
+
+                // 主体
+                const subjectGroup = document.createElement('div');
+                subjectGroup.className = 'option-group';
+                subjectGroup.innerHTML = `<label>🧑 主体描述</label><textarea class="shot-subject" rows="2">${shotData.subject || ''}</textarea>`;
+                card.appendChild(subjectGroup);
+
+                // 动作
+                const actionGroup = document.createElement('div');
+                actionGroup.className = 'option-group';
+                actionGroup.innerHTML = `<label>🏃 动作</label><div class="checkbox-group shot-action-group"></div><div class="custom-input"><input type="text" class="shot-action-custom" value="${shotData.actionCustom || ''}" placeholder="自定义动作"></div>`;
+                card.appendChild(actionGroup);
+                const actionContainer = actionGroup.querySelector('.checkbox-group');
+                optionData.action.forEach(item => {
+                    const label = document.createElement('label');
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.className = 'shot-action-cb';
+                    cb.value = item.value;
+                    if (shotData.action && shotData.action.includes(item.value)) cb.checked = true;
+                    label.appendChild(cb);
+                    label.appendChild(document.createTextNode(currentLang === 'zh' ? item.zh : item.en));
+                    actionContainer.appendChild(label);
+                });
+
+                // 情绪
+                const emotionGroup = document.createElement('div');
+                emotionGroup.className = 'option-group';
+                emotionGroup.innerHTML = `<label>😊 情绪</label><select class="shot-emotion"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-emotion-custom" value="${shotData.emotionCustom || ''}" placeholder="自定义情绪"></div>`;
+                card.appendChild(emotionGroup);
+                const emotionSelect = emotionGroup.querySelector('.shot-emotion');
+                optionData.emotion.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.emotion) opt.selected = true;
+                    emotionSelect.appendChild(opt);
+                });
+
+                // 风格
+                const styleGroup = document.createElement('div');
+                styleGroup.className = 'option-group';
+                styleGroup.innerHTML = `<label>🎨 风格</label><select class="shot-style"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-style-custom" value="${shotData.styleCustom || ''}" placeholder="自定义风格"></div>`;
+                card.appendChild(styleGroup);
+                const styleSelect = styleGroup.querySelector('.shot-style');
+                optionData.style.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.style) opt.selected = true;
+                    styleSelect.appendChild(opt);
+                });
+
+                // 特效
+                const effectGroup = document.createElement('div');
+                effectGroup.className = 'option-group';
+                effectGroup.innerHTML = `<label>✨ 特效</label><select class="shot-effect"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-effect-custom" value="${shotData.effectCustom || ''}" placeholder="自定义特效"></div>`;
+                card.appendChild(effectGroup);
+                const effectSelect = effectGroup.querySelector('.shot-effect');
+                optionData.effect.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.effect) opt.selected = true;
+                    effectSelect.appendChild(opt);
+                });
+
+                // 物理
+                const physicsGroup = document.createElement('div');
+                physicsGroup.className = 'option-group';
+                physicsGroup.innerHTML = `<label>⚡ 物理</label><select class="shot-physics"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-physics-custom" value="${shotData.physicsCustom || ''}" placeholder="自定义物理"></div>`;
+                card.appendChild(physicsGroup);
+                const physicsSelect = physicsGroup.querySelector('.shot-physics');
+                optionData.physics.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.physics) opt.selected = true;
+                    physicsSelect.appendChild(opt);
+                });
+
+                // 运镜
+                const cameraGroup = document.createElement('div');
+                cameraGroup.className = 'option-group';
+                cameraGroup.innerHTML = `<label>🎥 运镜</label><select class="shot-camera"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-camera-custom" value="${shotData.cameraCustom || ''}" placeholder="自定义运镜"></div>`;
+                card.appendChild(cameraGroup);
+                const cameraSelect = cameraGroup.querySelector('.shot-camera');
+                optionData.camera.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.camera) opt.selected = true;
+                    cameraSelect.appendChild(opt);
+                });
+
+                // 光影
+                const lightingGroup = document.createElement('div');
+                lightingGroup.className = 'option-group';
+                lightingGroup.innerHTML = `<label>☀️ 光影</label><select class="shot-lighting"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-lighting-custom" value="${shotData.lightingCustom || ''}" placeholder="自定义光影"></div>`;
+                card.appendChild(lightingGroup);
+                const lightingSelect = lightingGroup.querySelector('.shot-lighting');
+                optionData.lighting.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.lighting) opt.selected = true;
+                    lightingSelect.appendChild(opt);
+                });
+
+                // 互动
+                const interactionGroup = document.createElement('div');
+                interactionGroup.className = 'option-group';
+                interactionGroup.innerHTML = `<label>🌳 互动</label><select class="shot-interaction"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-interaction-custom" value="${shotData.interactionCustom || ''}" placeholder="自定义互动"></div>`;
+                card.appendChild(interactionGroup);
+                const interactionSelect = interactionGroup.querySelector('.shot-interaction');
+                optionData.interaction.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.interaction) opt.selected = true;
+                    interactionSelect.appendChild(opt);
+                });
+
+                // 站位
+                const positionGroup = document.createElement('div');
+                positionGroup.className = 'option-group';
+                positionGroup.innerHTML = `<label>📐 人物站位</label><select class="shot-position"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-position-custom" value="${shotData.positionCustom || ''}" placeholder="自定义站位"></div>`;
+                card.appendChild(positionGroup);
+                const positionSelect = positionGroup.querySelector('.shot-position');
+                optionData.position.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.position) opt.selected = true;
+                    positionSelect.appendChild(opt);
+                });
+
+                // 负面词
+                const negativeGroup = document.createElement('div');
+                negativeGroup.className = 'option-group';
+                negativeGroup.innerHTML = `<label>⚠️ 负面词</label><div class="checkbox-group shot-negative-group"></div><div class="custom-input"><input type="text" class="shot-negative-custom" value="${shotData.negativeCustom || ''}" placeholder="自定义负面词"></div>`;
+                card.appendChild(negativeGroup);
+                const negativeContainer = negativeGroup.querySelector('.checkbox-group');
+                optionData.negative.forEach(item => {
+                    const label = document.createElement('label');
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.className = 'shot-negative-cb';
+                    cb.value = item.value;
+                    if (shotData.negative && shotData.negative.includes(item.value)) cb.checked = true;
+                    label.appendChild(cb);
+                    label.appendChild(document.createTextNode(currentLang === 'zh' ? item.zh : item.en));
+                    negativeContainer.appendChild(label);
+                });
+
+                return card;
+            }
+
+            // 收集镜头数据
+            function collectShotData(card) {
+                return {
+                    subject: card.querySelector('.shot-subject').value,
+                    action: Array.from(card.querySelectorAll('.shot-action-cb:checked')).map(cb => cb.value),
+                    actionCustom: card.querySelector('.shot-action-custom').value,
+                    emotion: card.querySelector('.shot-emotion').value,
+                    emotionCustom: card.querySelector('.shot-emotion-custom').value,
+                    style: card.querySelector('.shot-style').value,
+                    styleCustom: card.querySelector('.shot-style-custom').value,
+                    effect: card.querySelector('.shot-effect').value,
+                    effectCustom: card.querySelector('.shot-effect-custom').value,
+                    physics: card.querySelector('.shot-physics').value,
+                    physicsCustom: card.querySelector('.shot-physics-custom').value,
+                    camera: card.querySelector('.shot-camera').value,
+                    cameraCustom: card.querySelector('.shot-camera-custom').value,
+                    lighting: card.querySelector('.shot-lighting').value,
+                    lightingCustom: card.querySelector('.shot-lighting-custom').value,
+                    interaction: card.querySelector('.shot-interaction').value,
+                    interactionCustom: card.querySelector('.shot-interaction-custom').value,
+                    position: card.querySelector('.shot-position').value,
+                    positionCustom: card.querySelector('.shot-position-custom').value,
+                    negative: Array.from(card.querySelectorAll('.shot-negative-cb:checked')).map(cb => cb.value),
+                    negativeCustom: card.querySelector('.shot-negative-custom').value
                 };
-                const rec = recommendations[style];
-                if (rec) {
-                    if (rec.effect && !document.getElementById('effect').value) {
-                        document.getElementById('effect').value = rec.effect;
-                    }
-                    if (rec.lighting && !document.getElementById('lighting').value) {
-                        document.getElementById('lighting').value = rec.lighting;
-                    }
-                }
             }
 
-            function bindEvents() {
-                document.querySelectorAll('.lang-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        currentLang = btn.dataset.lang;
-                        updateAllLang();
-                        updatePreview();
-                    });
+            // 生成单个镜头提示词
+            function generateShotPrompt(shotData) {
+                const parts = [];
+                if (shotData.subject) parts.push(shotData.subject);
+
+                // 动作
+                const actionTexts = shotData.action.map(v => {
+                    const item = optionData.action.find(i => i.value === v);
+                    return item ? (currentLang === 'zh' ? item.zh : item.en) : '';
+                }).filter(t => t);
+                if (shotData.actionCustom) actionTexts.push(shotData.actionCustom);
+                if (actionTexts.length) parts.push(actionTexts.join('，'));
+
+                // 情绪
+                const emotionItem = optionData.emotion.find(i => i.value === shotData.emotion);
+                if (emotionItem) parts.push(currentLang === 'zh' ? emotionItem.zh : emotionItem.en);
+                if (shotData.emotionCustom) parts.push(shotData.emotionCustom);
+
+                // 互动
+                const interactionItem = optionData.interaction.find(i => i.value === shotData.interaction);
+                if (interactionItem) parts.push(currentLang === 'zh' ? interactionItem.zh : interactionItem.en);
+                if (shotData.interactionCustom) parts.push(shotData.interactionCustom);
+
+                // 站位
+                const positionItem = optionData.position.find(i => i.value === shotData.position);
+                if (positionItem) parts.push(currentLang === 'zh' ? positionItem.zh : positionItem.en);
+                if (shotData.positionCustom) parts.push(shotData.positionCustom);
+
+                // 运镜
+                const cameraItem = optionData.camera.find(i => i.value === shotData.camera);
+                if (cameraItem) parts.push(currentLang === 'zh' ? cameraItem.zh : cameraItem.en);
+                if (shotData.cameraCustom) parts.push(shotData.cameraCustom);
+
+                // 光影
+                const lightingItem = optionData.lighting.find(i => i.value === shotData.lighting);
+                if (lightingItem) parts.push(currentLang === 'zh' ? lightingItem.zh : lightingItem.en);
+                if (shotData.lightingCustom) parts.push(shotData.lightingCustom);
+
+                // 风格
+                const styleItem = optionData.style.find(i => i.value === shotData.style);
+                if (styleItem) parts.push(currentLang === 'zh' ? styleItem.zh : styleItem.en);
+                if (shotData.styleCustom) parts.push(shotData.styleCustom);
+
+                // 特效
+                const effectItem = optionData.effect.find(i => i.value === shotData.effect);
+                if (effectItem) parts.push(currentLang === 'zh' ? effectItem.zh : effectItem.en);
+                if (shotData.effectCustom) parts.push(shotData.effectCustom);
+
+                // 物理
+                const physicsItem = optionData.physics.find(i => i.value === shotData.physics);
+                if (physicsItem) parts.push(currentLang === 'zh' ? physicsItem.zh : physicsItem.en);
+                if (shotData.physicsCustom) parts.push(shotData.physicsCustom);
+
+                let prompt = parts.join('，');
+
+                // 负面
+                const negativeTexts = [];
+                shotData.negative.forEach(v => {
+                    const item = optionData.negative.find(i => i.value === v);
+                    if (item) negativeTexts.push(currentLang === 'zh' ? item.zh : item.en);
+                });
+                if (shotData.negativeCustom) negativeTexts.push(shotData.negativeCustom);
+                if (negativeTexts.length) {
+                    if (currentPlatform === 'midjourney') {
+                        prompt += ' --no ' + negativeTexts.join(', ');
+                    } else if (currentPlatform === 'stable diffusion') {
+                        prompt += ' negative prompt: ' + negativeTexts.join('，');
+                    } else {
+                        prompt += '，避免' + negativeTexts.join('，');
+                    }
+                }
+
+                return prompt;
+            }
+
+            // 更新总预览
+            function updatePreview() {
+                const shots = collectAllShots();
+                if (shots.length === 0) {
+                    previewTextarea.value = '';
+                    return;
+                }
+                const shotPrompts = shots.map((shot, index) => `【镜头 ${index+1}】${generateShotPrompt(shot)}`);
+                previewTextarea.value = shotPrompts.join('\n\n');
+            }
+
+            function collectAllShots() {
+                return Array.from(document.querySelectorAll('.shot-card')).map(card => collectShotData(card));
+            }
+
+            // 绑定镜头事件
+            function bindShotEvents(card) {
+                card.querySelectorAll('input, select, textarea').forEach(el => {
+                    el.addEventListener('input', () => { updatePreview(); saveToLocalStorage(); });
+                    el.addEventListener('change', () => { updatePreview(); saveToLocalStorage(); });
                 });
 
-                document.querySelectorAll('.platform-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        currentPlatform = btn.dataset.platform;
-                        updatePreview();
-                    });
-                });
-
-                // 监听所有输入变化
-                document.getElementById('subject').addEventListener('input', () => {
+                card.querySelector('.copy-shot-btn').addEventListener('click', () => {
+                    const data = collectShotData(card);
+                    const newId = ++shotCounter;
+                    const newCard = createShotCard(newId, data);
+                    shotsContainer.appendChild(newCard);
+                    bindShotEvents(newCard);
                     updatePreview();
                     saveToLocalStorage();
                 });
 
-                // 监听所有自定义输入
-                document.getElementById('actionCustom').addEventListener('input', () => {
+                card.querySelector('.delete-shot-btn').addEventListener('click', () => {
+                    if (document.querySelectorAll('.shot-card').length <= 1) {
+                        alert('至少保留一个镜头');
+                        return;
+                    }
+                    card.remove();
                     updatePreview();
                     saveToLocalStorage();
-                });
-                document.getElementById('emotionCustom').addEventListener('input', () => {
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-                document.getElementById('styleCustom').addEventListener('input', () => {
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-                document.getElementById('effectCustom').addEventListener('input', () => {
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-                document.getElementById('physicsCustom').addEventListener('input', () => {
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-                document.getElementById('cameraCustom').addEventListener('input', () => {
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-                document.getElementById('lightingCustom').addEventListener('input', () => {
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-                document.getElementById('interactionCustom').addEventListener('input', () => {
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-                document.getElementById('negativeCustom').addEventListener('input', () => {
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-
-                // 监听select变化
-                ['emotion', 'style', 'effect', 'physics', 'camera', 'lighting', 'interaction'].forEach(id => {
-                    document.getElementById(id).addEventListener('change', () => {
-                        if (id === 'style') applyRecommendations(); // 智能推荐
-                        updatePreview();
-                        saveToLocalStorage();
-                    });
-                });
-
-                // 按钮事件
-                document.getElementById('saveConfigBtn').addEventListener('click', saveToLocalStorage);
-                document.getElementById('loadConfigBtn').addEventListener('click', loadFromLocalStorage);
-                document.getElementById('clearBtn').addEventListener('click', clearAll);
-                document.getElementById('copyBtn').addEventListener('click', copyPrompt);
-
-                // 模板按钮
-                document.querySelectorAll('.template-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const tmpl = btn.dataset.template;
-                        applyTemplate(tmpl);
-                    });
-                });
-
-                // 预览区编辑时，不自动保存（用户手动修改内容，我们允许但不覆盖存储）
-                document.getElementById('preview').addEventListener('input', () => {
-                    // 不保存，只用于手动编辑
                 });
             }
 
-            // ---------- 初始化 ----------
-            function loadInitial() {
-                initOptions();
-                // 尝试从localStorage加载
-                const saved = localStorage.getItem('promptBuilderConfig');
-                if (saved) {
-                    loadFromLocalStorage();
-                } else {
-                    // 默认示例
-                    document.getElementById('subject').value = currentLang === 'zh' ? '一个穿红色风衣的银发机械姬' : 'a silver-haired cyborg in red trench coat';
-                    document.querySelector('#actionGroup input[value="slowly turn"]').checked = true;
-                    document.getElementById('emotion').value = 'determined';
-                    document.getElementById('style').value = 'sci-fi';
-                    document.getElementById('effect').value = 'glow';
-                    document.getElementById('physics').value = 'slow motion';
-                    document.getElementById('camera').value = 'orbit';
-                    document.getElementById('lighting').value = 'neon';
-                    document.getElementById('interaction').value = 'rain';
-                    document.querySelector('#negativeGroup input[value="blurry"]').checked = true;
-                    document.querySelector('#negativeGroup input[value="distorted face"]').checked = true;
-                }
+            // 保存配置
+            function saveToLocalStorage() {
+                const shots = collectAllShots();
+                localStorage.setItem('multiShotFull', JSON.stringify(shots));
+                showToast('配置已保存');
+            }
+
+            // 加载配置
+            function loadFromLocalStorage() {
+                const saved = localStorage.getItem('multiShotFull');
+                if (!saved) { showToast('无保存配置'); return; }
+                try {
+                    const shots = JSON.parse(saved);
+                    shotsContainer.innerHTML = '';
+                    shotCounter = 0;
+                    shots.forEach(data => {
+                        const newId = ++shotCounter;
+                        const card = createShotCard(newId, data);
+                        shotsContainer.appendChild(card);
+                        bindShotEvents(card);
+                    });
+                    updatePreview();
+                    showToast('配置已加载');
+                } catch { showToast('加载失败'); }
+            }
+
+            // 清空所有
+            function clearAll() {
+                shotsContainer.innerHTML = '';
+                shotCounter = 0;
+                const newId = ++shotCounter;
+                const card = createShotCard(newId, {});
+                shotsContainer.appendChild(card);
+                bindShotEvents(card);
                 updatePreview();
+                saveToLocalStorage();
             }
 
-            loadInitial();
-            bindEvents();
+            // 语言切换
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentLang = btn.dataset.lang;
+                    // 简单刷新（实际可优化，为省事用重载）
+                    location.reload();
+                });
+            });
+
+            // 平台切换
+            document.querySelectorAll('.platform-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentPlatform = btn.dataset.platform;
+                    updatePreview();
+                });
+            });
+
+            // 模板按钮
+            document.querySelectorAll('.template-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tmpl = templates[btn.dataset.template];
+                    if (!tmpl) return;
+                    // 清空并新建一个镜头
+                    shotsContainer.innerHTML = '';
+                    shotCounter = 0;
+                    const newId = ++shotCounter;
+                    const card = createShotCard(newId, {
+                        subject: currentLang === 'zh' ? tmpl.subject.zh : tmpl.subject.en,
+                        action: tmpl.action,
+                        emotion: tmpl.emotion,
+                        style: tmpl.style,
+                        effect: tmpl.effect,
+                        physics: tmpl.physics,
+                        camera: tmpl.camera,
+                        lighting: tmpl.lighting,
+                        interaction: tmpl.interaction,
+                        position: tmpl.position,
+                        negative: tmpl.negative
+                    });
+                    shotsContainer.appendChild(card);
+                    bindShotEvents(card);
+                    updatePreview();
+                    saveToLocalStorage();
+                });
+            });
+
+            // 添加镜头
+            document.getElementById('addShotBtn').addEventListener('click', () => {
+                const newId = ++shotCounter;
+                const card = createShotCard(newId, {});
+                shotsContainer.appendChild(card);
+                bindShotEvents(card);
+                updatePreview();
+                saveToLocalStorage();
+            });
+
+            // 保存/加载/清空/复制按钮
+            document.getElementById('saveConfigBtn').addEventListener('click', saveToLocalStorage);
+            document.getElementById('loadConfigBtn').addEventListener('click', loadFromLocalStorage);
+            document.getElementById('clearBtn').addEventListener('click', clearAll);
+            document.getElementById('copyBtn').addEventListener('click', async () => {
+                const text = previewTextarea.value;
+                if (!text.trim()) { alert('无内容可复制'); return; }
+                await navigator.clipboard.writeText(text);
+                showToast('✅ 已复制');
+            });
+
+            // 初始化
+            (function init() {
+                const newId = ++shotCounter;
+                const card = createShotCard(newId, {});
+                shotsContainer.appendChild(card);
+                bindShotEvents(card);
+                updatePreview();
+            })();
         })();
     </script>
 </body>
