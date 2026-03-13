@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AI短剧提示词构建器 · 导演完全版</title>
+    <title>AI短剧提示词构建器 · 简洁完整版</title>
     <style>
-        /* 完整样式，与之前一致 */
+        /* 极简样式，保留核心功能 */
         * {
             margin: 0;
             padding: 0;
@@ -13,234 +13,242 @@
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
         body {
-            background: #0b1120;
-            padding: 20px;
+            background: #0a0f1a;
+            padding: 16px;
             display: flex;
             justify-content: center;
         }
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             width: 100%;
-            background: #1a2332;
-            border-radius: 32px;
+            background: #151e2c;
+            border-radius: 20px;
             overflow: hidden;
-            border: 1px solid #334155;
+            border: 1px solid #2a3442;
         }
         .header {
-            background: #0f172a;
+            background: #0e1623;
             color: white;
-            padding: 24px 32px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 500;
         }
         .toolbar {
             display: flex;
-            gap: 16px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 20px;
         }
         .lang-switch, .platform-switch {
             display: flex;
-            gap: 8px;
-            background: #1e293b;
+            gap: 4px;
+            background: #1f2a38;
             padding: 4px;
-            border-radius: 40px;
+            border-radius: 30px;
         }
         .lang-btn, .platform-btn {
-            padding: 8px 24px;
-            border-radius: 40px;
+            padding: 4px 12px;
+            border-radius: 30px;
             cursor: pointer;
-            color: #94a3b8;
+            color: #a0b3cc;
             background: transparent;
             border: none;
+            font-size: 0.85rem;
         }
         .lang-btn.active, .platform-btn.active {
             background: #3b82f6;
             color: white;
         }
-        .export-import {
-            display: flex;
-            gap: 8px;
-            margin-left: auto;
-        }
         .icon-btn {
-            background: #1e293b;
-            border: 1px solid #334155;
-            color: #e2e8f0;
-            padding: 8px 16px;
-            border-radius: 40px;
+            background: #1f2a38;
+            border: none;
+            color: #cbd5e0;
+            padding: 4px 10px;
+            border-radius: 30px;
             cursor: pointer;
+            font-size: 0.85rem;
         }
         .builder-body {
-            padding: 32px;
-            background: #111827;
+            padding: 20px;
             max-height: 70vh;
             overflow-y: auto;
+            background: #111a26;
         }
         .template-library {
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 30px;
+            background: #1f2a38;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .template-buttons {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 8px;
         }
         .template-btn {
-            background: #0f172a;
-            color: #e2e8f0;
-            padding: 8px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            border: 1px solid #334155;
-        }
-        .batch-tools {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-        .shots-container {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        .shot-card {
-            background: #1e293b;
-            border-radius: 20px;
-            padding: 20px;
-            border: 2px solid #3b82f6;
-        }
-        .shot-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            align-items: center;
-        }
-        .shot-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .shot-actions button {
-            background: #0f172a;
-            border: 1px solid #334155;
+            background: #0e1623;
             color: #e2e8f0;
             padding: 4px 12px;
             border-radius: 30px;
             cursor: pointer;
-            margin-left: 8px;
-        }
-        .move-buttons button {
-            background: #0f172a;
             border: 1px solid #334155;
-            color: #e2e8f0;
-            padding: 4px 8px;
-            border-radius: 30px;
-            cursor: pointer;
-            margin: 0 2px;
+            font-size: 0.85rem;
         }
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
+        .shots-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 20px;
         }
-        .option-group {
-            background: #0f172a;
+        .shot-card {
+            background: #1f2a38;
             border-radius: 16px;
             padding: 16px;
-            border: 1px solid #334155;
+            border: 1px solid #3b82f6;
         }
-        .option-group label {
-            display: block;
+        .shot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .shot-title {
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 8px;
             color: #e2e8f0;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+        }
+        .move-buttons button {
+            background: #0e1623;
+            border: none;
+            color: #a0b3cc;
+            padding: 2px 6px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .shot-actions button {
+            background: #0e1623;
+            border: none;
+            color: #a0b3cc;
+            padding: 4px 8px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 4px;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+        .option-group {
+            background: #0e1623;
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid #2a3442;
+        }
+        .option-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #b0c4de;
+            font-size: 0.85rem;
         }
         .option-group select, .option-group input, .option-group textarea {
             width: 100%;
-            padding: 10px;
-            background: #1e293b;
-            border: 2px solid #334155;
-            border-radius: 12px;
+            padding: 6px 8px;
+            background: #1f2a38;
+            border: 1px solid #334155;
+            border-radius: 8px;
             color: #f1f5f9;
+            font-size: 0.85rem;
             outline: none;
         }
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 4px;
+            max-height: 80px;
+            overflow-y: auto;
+            padding: 2px;
         }
         .checkbox-group label {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: #1e293b;
-            padding: 6px 12px;
-            border-radius: 30px;
+            gap: 3px;
+            background: #1f2a38;
+            padding: 3px 8px;
+            border-radius: 16px;
             font-weight: normal;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             cursor: pointer;
             border: 1px solid #334155;
+            margin: 0;
         }
         .weight-control {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 6px;
+            gap: 6px;
+            margin-top: 4px;
         }
         .weight-control input[type="range"] {
-            width: 100px;
-            height: 6px;
+            width: 80px;
+            height: 4px;
             background: #334155;
-            border-radius: 3px;
+            border-radius: 2px;
             -webkit-appearance: none;
         }
         .weight-control input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 12px;
+            height: 12px;
             background: #3b82f6;
             border-radius: 50%;
             cursor: pointer;
         }
         .weight-control span {
             color: #94a3b8;
-            font-size: 0.85rem;
-            min-width: 35px;
+            font-size: 0.75rem;
+            min-width: 30px;
         }
         .custom-input {
-            margin-top: 10px;
-            padding-top: 10px;
+            margin-top: 6px;
+            padding-top: 6px;
             border-top: 1px dashed #334155;
         }
         .custom-input input {
-            border-color: #3b82f6;
+            font-size: 0.8rem;
+            padding: 4px 6px;
         }
         .add-shot-btn {
-            background: #1e293b;
-            border: 2px dashed #3b82f6;
+            background: #1f2a38;
+            border: 1px dashed #3b82f6;
             color: #3b82f6;
-            padding: 16px;
-            border-radius: 20px;
+            padding: 10px;
+            border-radius: 16px;
             width: 100%;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            margin: 20px 0;
+            margin: 10px 0;
         }
         .preview-area {
-            background: #0f172a;
-            border: 2px solid #3b82f6;
-            border-radius: 20px;
-            padding: 24px;
+            background: #0e1623;
+            border: 1px solid #3b82f6;
+            border-radius: 16px;
+            padding: 16px;
             margin: 20px 0;
         }
         .preview-area textarea {
@@ -250,146 +258,93 @@
             color: #e2e8f0;
             font-family: monospace;
             resize: vertical;
-            min-height: 150px;
+            min-height: 100px;
+            font-size: 0.85rem;
             outline: none;
         }
         .actions {
             display: flex;
-            gap: 16px;
+            gap: 10px;
             justify-content: flex-end;
             flex-wrap: wrap;
         }
         .btn {
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 500;
             cursor: pointer;
             background: #3b82f6;
             color: white;
             border: none;
+            font-size: 0.85rem;
         }
         .btn-secondary {
-            background: #1e293b;
-            border: 2px solid #3b82f6;
+            background: #1f2a38;
+            border: 1px solid #3b82f6;
             color: #3b82f6;
         }
         .footer {
             text-align: center;
-            padding: 20px;
-            background: #0f172a;
+            padding: 12px;
+            background: #0e1623;
             color: #64748b;
-            border-top: 1px solid #334155;
+            font-size: 0.8rem;
+            border-top: 1px solid #2a3442;
         }
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1e293b;
+            bottom: 20px;
+            right: 20px;
+            background: #1f2a38;
             color: white;
-            padding: 12px 24px;
-            border-radius: 40px;
+            padding: 8px 16px;
+            border-radius: 30px;
             border: 1px solid #3b82f6;
             transform: translateY(100px);
             transition: 0.3s;
+            font-size: 0.85rem;
             z-index: 1000;
         }
         .toast.show {
             transform: translateY(0);
-        }
-        .badge {
-            background: #3b82f6;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            margin-left: 8px;
-            cursor: help;
-        }
-        .collapsible .option-group:not(.always-visible) {
-            display: none;
-        }
-        .collapsible.expanded .option-group:not(.always-visible) {
-            display: block;
-        }
-        .toggle-link {
-            color: #3b82f6;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin: 10px 0;
-            display: inline-block;
-        }
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #1e293b;
-            color: #e2e8f0;
-            text-align: center;
-            padding: 5px;
-            border-radius: 6px;
-            border: 1px solid #3b82f6;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.8rem;
-            font-weight: normal;
-        }
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 AI短剧提示词构建器 · 导演完全版 <span class="badge" title="所有选项均支持权重和自定义">v6.0</span></h1>
-            <p>多镜头 · 智能推荐 · 权重控制 · 批量操作 · 导出/导入 · 折叠面板 · 拖拽排序 · 完整预设</p>
+            <h1>🎬 AI短剧提示词构建器 · 简洁版</h1>
             <div class="toolbar">
                 <div class="lang-switch">
                     <button class="lang-btn active" data-lang="zh">中文</button>
-                    <button class="lang-btn" data-lang="en">English</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
                 </div>
                 <div class="platform-switch">
-                    <button class="platform-btn active" data-platform="通用">🎯 通用</button>
-                    <button class="platform-btn" data-platform="midjourney">🎨 Midjourney</button>
-                    <button class="platform-btn" data-platform="stable diffusion">⚡ Stable Diffusion</button>
+                    <button class="platform-btn active" data-platform="通用">通用</button>
+                    <button class="platform-btn" data-platform="midjourney">MJ</button>
+                    <button class="platform-btn" data-platform="stable diffusion">SD</button>
                 </div>
-                <div class="export-import">
-                    <button class="icon-btn" id="exportConfigBtn">📤 导出配置</button>
-                    <button class="icon-btn" id="importConfigBtn">📥 导入配置</button>
-                    <input type="file" id="importFile" accept=".json" style="display:none;">
-                </div>
+                <button class="icon-btn" id="exportConfigBtn" title="导出配置">📤</button>
+                <button class="icon-btn" id="importConfigBtn" title="导入配置">📥</button>
+                <input type="file" id="importFile" accept=".json" style="display:none;">
             </div>
         </div>
 
         <div class="builder-body">
-            <!-- 模板库（多镜头模板） -->
+            <!-- 模板库（简化） -->
             <div class="template-library">
-                <h3>📚 多镜头模板库 <span class="badge" title="点击一键生成多镜头故事板">v2.0</span></h3>
+                <span style="color:#b0c4de; font-size:0.9rem;">📚 模板：</span>
                 <div class="template-buttons">
-                    <button class="template-btn" data-template="ancient_fight">⚔️ 古风打斗 (3镜头)</button>
-                    <button class="template-btn" data-template="urban_love">💔 都市虐恋 (3镜头)</button>
-                    <button class="template-btn" data-template="scifi_awakening">🤖 科幻觉醒 (2镜头)</button>
-                    <button class="template-btn" data-template="fantasy_magic">🧙 奇幻魔法 (2镜头)</button>
-                </div>
-                <div class="batch-tools">
-                    <button class="icon-btn" id="applyToAllBtn">📋 复制当前镜头到所有</button>
-                    <button class="icon-btn" id="collapseAllBtn">🔽 折叠所有镜头</button>
-                    <button class="icon-btn" id="expandAllBtn">🔼 展开所有镜头</button>
+                    <button class="template-btn" data-template="ancient_fight">⚔️古风打斗(3)</button>
+                    <button class="template-btn" data-template="urban_love">💔都市虐恋(3)</button>
+                    <button class="template-btn" data-template="scifi_awakening">🤖科幻觉醒(2)</button>
+                    <button class="template-btn" data-template="fantasy_magic">🧙奇幻魔法(2)</button>
                 </div>
             </div>
 
             <!-- 镜头容器 -->
             <div id="shotsContainer" class="shots-container"></div>
-            <button class="add-shot-btn" id="addShotBtn">➕ 添加新镜头</button>
+            <button class="add-shot-btn" id="addShotBtn">➕ 添加镜头</button>
 
             <!-- 预览区 -->
             <div class="preview-area">
@@ -397,15 +352,15 @@
             </div>
 
             <div class="actions">
-                <button class="btn btn-secondary" id="saveConfigBtn">💾 保存配置</button>
-                <button class="btn btn-secondary" id="loadConfigBtn">📂 加载已保存</button>
-                <button class="btn btn-secondary" id="clearBtn">🧹 清空所有</button>
-                <button class="btn" id="copyBtn">📋 复制提示词</button>
+                <button class="btn-secondary" id="saveConfigBtn">💾 保存</button>
+                <button class="btn-secondary" id="loadConfigBtn">📂 加载</button>
+                <button class="btn-secondary" id="clearBtn">🧹 清空</button>
+                <button class="btn" id="copyBtn">📋 复制</button>
             </div>
         </div>
 
         <div class="footer">
-            ⚡ 所有分类均有丰富预设，可自定义 | 悬停问号看说明
+            ⚡ 所有分类均有预设 · 拖动滑块调权重 · 分类前缀自动添加
         </div>
     </div>
 
@@ -422,7 +377,7 @@
             const previewTextarea = document.getElementById('preview');
             let updateTimeout = null;
 
-            // ---------- 完整预设数据（所有分类均有丰富选项）----------
+            // ---------- 完整预设数据 ----------
             const optionData = {
                 action: [
                     { value: 'slowly turn', zh: '缓缓转身', en: 'slowly turn' },
@@ -459,18 +414,18 @@
                     { value: 'dodge', zh: '闪避', en: 'dodge' }
                 ],
                 emotion: [
-                    { value: 'smiling gentle', zh: '面带微笑，眼神温柔', en: 'smiling, gentle eyes' },
-                    { value: 'sad furrowed', zh: '眼神悲伤，眉头微皱', en: 'sad, slightly furrowed brows' },
-                    { value: 'determined', zh: '目光坚定，嘴角上扬', en: 'determined gaze, smiling' },
-                    { value: 'fear', zh: '惊恐地睁大眼睛', en: 'wide-eyed with fear' },
-                    { value: 'angry', zh: '愤怒地瞪视', en: 'angry glare' },
-                    { value: 'tender', zh: '温柔地注视', en: 'gaze tenderly' },
-                    { value: 'sneer', zh: '轻蔑一笑', en: 'sneer' },
-                    { value: 'cry', zh: '泪流满面', en: 'tears streaming down' },
-                    { value: 'dazed', zh: '神情恍惚', en: 'dazed expression' },
+                    { value: 'smiling gentle', zh: '面带微笑', en: 'smiling' },
+                    { value: 'sad furrowed', zh: '悲伤皱眉', en: 'sad' },
+                    { value: 'determined', zh: '目光坚定', en: 'determined' },
+                    { value: 'fear', zh: '恐惧', en: 'fear' },
+                    { value: 'angry', zh: '愤怒', en: 'angry' },
+                    { value: 'tender', zh: '温柔', en: 'tender' },
+                    { value: 'sneer', zh: '轻蔑', en: 'sneer' },
+                    { value: 'cry', zh: '哭泣', en: 'cry' },
+                    { value: 'dazed', zh: '恍惚', en: 'dazed' },
                     { value: 'gnash', zh: '咬牙切齿', en: 'gnashing teeth' },
-                    { value: 'joyful', zh: '眉开眼笑', en: 'beaming with joy' },
-                    { value: 'surprised', zh: '惊讶地张嘴', en: 'mouth open in surprise' },
+                    { value: 'joyful', zh: '喜悦', en: 'joyful' },
+                    { value: 'surprised', zh: '惊讶', en: 'surprised' },
                     { value: 'confused', zh: '困惑', en: 'confused' },
                     { value: 'excited', zh: '兴奋', en: 'excited' },
                     { value: 'nervous', zh: '紧张', en: 'nervous' },
@@ -478,69 +433,56 @@
                     { value: 'proud', zh: '骄傲', en: 'proud' },
                     { value: 'ashamed', zh: '羞愧', en: 'ashamed' },
                     { value: 'jealous', zh: '嫉妒', en: 'jealous' },
-                    { value: 'hopeful', zh: '充满希望', en: 'hopeful' },
+                    { value: 'hopeful', zh: '希望', en: 'hopeful' },
                     { value: 'desperate', zh: '绝望', en: 'desperate' },
                     { value: 'lonely', zh: '孤独', en: 'lonely' }
                 ],
                 style: [
-                    { group: '🎬 电影风格', value: 'cinematic', zh: '电影质感', en: 'cinematic' },
-                    { group: '🎬 电影风格', value: 'hollywood', zh: '好莱坞大片', en: 'Hollywood blockbuster' },
-                    { group: '🎬 电影风格', value: 'noir', zh: '黑色电影', en: 'film noir' },
-                    { group: '🎬 电影风格', value: 'vintage', zh: '复古胶片', en: 'vintage film grain' },
-                    { group: '🎬 电影风格', value: 'documentary', zh: '纪录片', en: 'documentary' },
-                    { group: '🎬 电影风格', value: 'sci-fi', zh: '科幻电影', en: 'sci-fi' },
-                    { group: '🎬 电影风格', value: 'horror', zh: '恐怖电影', en: 'horror' },
-                    { group: '🎬 电影风格', value: 'romance', zh: '浪漫电影', en: 'romance' },
-                    { group: '🎬 电影风格', value: 'action', zh: '动作电影', en: 'action movie' },
-                    { group: '🎬 电影风格', value: 'western', zh: '西部片', en: 'western' },
-                    { group: '🎬 电影风格', value: 'war', zh: '战争片', en: 'war film' },
-                    { group: '📺 动漫风格', value: 'anime', zh: '日式动漫', en: 'anime' },
-                    { group: '📺 动漫风格', value: 'ghibli', zh: '吉卜力风', en: 'Ghibli' },
-                    { group: '📺 动漫风格', value: 'shonen', zh: '少年热血', en: 'shonen' },
-                    { group: '📺 动漫风格', value: 'chibi', zh: 'Q版可爱', en: 'chibi' },
-                    { group: '📺 动漫风格', value: 'cyberpunk', zh: '赛博朋克动漫', en: 'cyberpunk anime' },
-                    { group: '📺 动漫风格', value: 'mecha', zh: '机甲动漫', en: 'mecha' },
-                    { group: '📺 动漫风格', value: 'magical girl', zh: '魔法少女', en: 'magical girl' },
-                    { group: '📺 动漫风格', value: 'slice of life', zh: '日常', en: 'slice of life' },
-                    { group: '📺 动漫风格', value: 'comedy', zh: '搞笑动漫', en: 'comedy anime' },
-                    { group: '🖌️ 艺术风格', value: 'watercolor', zh: '水彩画', en: 'watercolor' },
-                    { group: '🖌️ 艺术风格', value: 'oil', zh: '油画', en: 'oil painting' },
-                    { group: '🖌️ 艺术风格', value: 'ink', zh: '水墨画', en: 'ink wash' },
-                    { group: '🖌️ 艺术风格', value: 'pixel', zh: '像素风', en: 'pixel art' },
-                    { group: '🖌️ 艺术风格', value: '3d', zh: '3D动画', en: '3D animation' },
-                    { group: '🖌️ 艺术风格', value: 'clay', zh: '黏土动画', en: 'clay animation' },
-                    { group: '🖌️ 艺术风格', value: 'sketch', zh: '素描', en: 'sketch' },
-                    { group: '🖌️ 艺术风格', value: 'pop art', zh: '波普艺术', en: 'pop art' }
+                    { group: '电影', value: 'cinematic', zh: '电影质感', en: 'cinematic' },
+                    { group: '电影', value: 'hollywood', zh: '好莱坞', en: 'hollywood' },
+                    { group: '电影', value: 'noir', zh: '黑色电影', en: 'film noir' },
+                    { group: '电影', value: 'vintage', zh: '复古胶片', en: 'vintage' },
+                    { group: '电影', value: 'documentary', zh: '纪录片', en: 'documentary' },
+                    { group: '电影', value: 'sci-fi', zh: '科幻', en: 'sci-fi' },
+                    { group: '电影', value: 'horror', zh: '恐怖', en: 'horror' },
+                    { group: '电影', value: 'romance', zh: '浪漫', en: 'romance' },
+                    { group: '电影', value: 'action', zh: '动作', en: 'action' },
+                    { group: '动漫', value: 'anime', zh: '日式动漫', en: 'anime' },
+                    { group: '动漫', value: 'ghibli', zh: '吉卜力', en: 'ghibli' },
+                    { group: '动漫', value: 'shonen', zh: '少年热血', en: 'shonen' },
+                    { group: '动漫', value: 'chibi', zh: 'Q版', en: 'chibi' },
+                    { group: '动漫', value: 'cyberpunk', zh: '赛博朋克', en: 'cyberpunk' },
+                    { group: '动漫', value: 'mecha', zh: '机甲', en: 'mecha' },
+                    { group: '艺术', value: 'watercolor', zh: '水彩', en: 'watercolor' },
+                    { group: '艺术', value: 'oil', zh: '油画', en: 'oil painting' },
+                    { group: '艺术', value: 'ink', zh: '水墨', en: 'ink wash' },
+                    { group: '艺术', value: 'pixel', zh: '像素风', en: 'pixel art' },
+                    { group: '艺术', value: '3d', zh: '3D动画', en: '3D animation' },
+                    { group: '艺术', value: 'clay', zh: '黏土', en: 'clay' }
                 ],
                 effect: [
                     { value: 'particle', zh: '粒子特效', en: 'particle effects' },
-                    { value: 'glow', zh: '发光特效', en: 'glow effect' },
-                    { value: 'fire', zh: '火焰特效', en: 'fire' },
-                    { value: 'electric', zh: '电流/雷电', en: 'electricity' },
-                    { value: 'smoke', zh: '烟雾/雾气', en: 'smoke' },
-                    { value: 'water', zh: '水花/波浪', en: 'water splash' },
-                    { value: 'magic', zh: '魔法光效', en: 'magic' },
-                    { value: 'glitch', zh: '故障艺术', en: 'glitch' },
+                    { value: 'glow', zh: '发光', en: 'glow' },
+                    { value: 'fire', zh: '火焰', en: 'fire' },
+                    { value: 'electric', zh: '雷电', en: 'electricity' },
+                    { value: 'smoke', zh: '烟雾', en: 'smoke' },
+                    { value: 'water', zh: '水花', en: 'water' },
+                    { value: 'magic', zh: '魔法', en: 'magic' },
+                    { value: 'glitch', zh: '故障', en: 'glitch' },
                     { value: 'lens flare', zh: '镜头光晕', en: 'lens flare' },
                     { value: 'bloom', zh: '泛光', en: 'bloom' },
-                    { value: 'sparkle', zh: '闪烁星光', en: 'sparkle' },
-                    { value: 'explosion', zh: '爆炸', en: 'explosion' },
-                    { value: 'blood', zh: '血迹', en: 'blood' },
-                    { value: 'rainbow', zh: '彩虹', en: 'rainbow' },
-                    { value: 'shadow', zh: '阴影', en: 'shadow' },
-                    { value: 'light ray', zh: '光线', en: 'light rays' }
+                    { value: 'sparkle', zh: '闪烁', en: 'sparkle' },
+                    { value: 'explosion', zh: '爆炸', en: 'explosion' }
                 ],
                 physics: [
                     { value: 'slow motion', zh: '慢动作', en: 'slow motion' },
-                    { value: 'timelapse', zh: '延时摄影', en: 'timelapse' },
-                    { value: 'gravity', zh: '真实重力', en: 'gravity' },
+                    { value: 'timelapse', zh: '延时', en: 'timelapse' },
+                    { value: 'gravity', zh: '重力', en: 'gravity' },
                     { value: 'zero gravity', zh: '零重力', en: 'zero gravity' },
                     { value: 'weightless', zh: '失重', en: 'weightless' },
                     { value: 'inertia', zh: '惯性', en: 'inertia' },
                     { value: 'cloth sim', zh: '布料物理', en: 'cloth physics' },
-                    { value: 'hair sim', zh: '毛发物理', en: 'hair physics' },
-                    { value: 'ragdoll', zh: '布娃娃物理', en: 'ragdoll' },
-                    { value: 'fluid', zh: '流体模拟', en: 'fluid simulation' }
+                    { value: 'hair sim', zh: '毛发物理', en: 'hair physics' }
                 ],
                 camera: [
                     { value: 'push in', zh: '推近', en: 'push in' },
@@ -553,12 +495,11 @@
                     { value: 'drone', zh: '航拍', en: 'drone' },
                     { value: 'handheld', zh: '手持', en: 'handheld' },
                     { value: 'steadicam', zh: '斯坦尼康', en: 'steadicam' },
-                    { value: 'crane', zh: '摇臂', en: 'crane shot' },
+                    { value: 'crane', zh: '摇臂', en: 'crane' },
                     { value: 'dolly', zh: '轨道', en: 'dolly' },
                     { value: 'pan', zh: '横摇', en: 'pan' },
                     { value: 'tilt', zh: '纵摇', en: 'tilt' },
-                    { value: 'zoom', zh: '变焦', en: 'zoom' },
-                    { value: 'rack focus', zh: '焦点切换', en: 'rack focus' }
+                    { value: 'zoom', zh: '变焦', en: 'zoom' }
                 ],
                 lighting: [
                     { value: 'golden hour', zh: '黄金时刻', en: 'golden hour' },
@@ -568,28 +509,22 @@
                     { value: 'soft', zh: '柔和光', en: 'soft light' },
                     { value: 'volumetric', zh: '体积光', en: 'volumetric' },
                     { value: 'backlight', zh: '逆光', en: 'backlight' },
-                    { value: 'studio', zh: '摄影棚光', en: 'studio lighting' },
+                    { value: 'studio', zh: '摄影棚光', en: 'studio' },
                     { value: 'moody', zh: '忧郁暗调', en: 'moody' },
                     { value: 'sunny', zh: '晴朗', en: 'sunny' },
                     { value: 'cloudy', zh: '阴天', en: 'cloudy' },
-                    { value: 'night', zh: '夜晚', en: 'night' },
-                    { value: 'candlelight', zh: '烛光', en: 'candlelight' },
-                    { value: 'firelight', zh: '火光', en: 'firelight' },
-                    { value: 'fluorescent', zh: '荧光', en: 'fluorescent' }
+                    { value: 'night', zh: '夜晚', en: 'night' }
                 ],
                 interaction: [
-                    { value: 'touch', zh: '触碰樱花', en: 'touch cherry blossoms' },
-                    { value: 'rain', zh: '雨水流下', en: 'rain streaming down' },
+                    { value: 'touch', zh: '触碰樱花', en: 'touch cherry' },
+                    { value: 'rain', zh: '雨水流下', en: 'rain streaming' },
                     { value: 'leaves', zh: '踩落叶', en: 'footsteps on leaves' },
-                    { value: 'wind', zh: '风吹发梢', en: 'wind blowing hair' },
+                    { value: 'wind', zh: '风吹发梢', en: 'wind blowing' },
                     { value: 'ruins', zh: '站在废墟', en: 'standing on ruins' },
-                    { value: 'wall', zh: '倚靠墙', en: 'leaning against wall' },
+                    { value: 'wall', zh: '倚靠墙', en: 'leaning on wall' },
                     { value: 'water', zh: '水面倒影', en: 'water reflection' },
-                    { value: 'fog', zh: '雾气缭绕', en: 'surrounded by fog' },
-                    { value: 'snow', zh: '雪花飘落', en: 'snow falling' },
-                    { value: 'sand', zh: '脚印在沙中', en: 'footprints in sand' },
-                    { value: 'grass', zh: '草地', en: 'grass' },
-                    { value: 'flower', zh: '摘花', en: 'picking flowers' }
+                    { value: 'fog', zh: '雾气缭绕', en: 'fog' },
+                    { value: 'snow', zh: '雪花飘落', en: 'snow falling' }
                 ],
                 position: [
                     { value: 'close-up', zh: '特写', en: 'close-up' },
@@ -597,17 +532,13 @@
                     { value: 'full', zh: '全景', en: 'full shot' },
                     { value: 'wide', zh: '远景', en: 'wide shot' },
                     { value: 'two-shot', zh: '双人镜头', en: 'two-shot' },
-                    { value: 'over-shoulder', zh: '过肩镜头', en: 'over-the-shoulder' },
+                    { value: 'over-shoulder', zh: '过肩镜头', en: 'over-shoulder' },
                     { value: 'low-angle', zh: '低角度仰拍', en: 'low-angle' },
                     { value: 'high-angle', zh: '高角度俯拍', en: 'high-angle' },
                     { value: 'dutch', zh: '倾斜构图', en: 'dutch angle' },
                     { value: 'symmetrical', zh: '对称构图', en: 'symmetrical' },
                     { value: 'rule-of-thirds', zh: '三分法', en: 'rule of thirds' },
-                    { value: 'extreme close-up', zh: '极特写', en: 'extreme close-up' },
-                    { value: 'medium close-up', zh: '中近景', en: 'medium close-up' },
-                    { value: 'cowboy', zh: '牛仔镜头', en: 'cowboy shot' },
-                    { value: 'bird\'s eye', zh: '鸟瞰', en: 'bird\'s eye view' },
-                    { value: 'worm\'s eye', zh: '虫眼视角', en: 'worm\'s eye view' }
+                    { value: 'extreme close-up', zh: '极特写', en: 'extreme close-up' }
                 ],
                 negative: [
                     { value: 'blurry', zh: '模糊', en: 'blurry' },
@@ -619,13 +550,11 @@
                     { value: 'morphing', zh: '变形', en: 'morphing' },
                     { value: 'noise', zh: '噪点', en: 'noise' },
                     { value: 'bad anatomy', zh: '错误解剖', en: 'bad anatomy' },
-                    { value: 'ugly', zh: '丑陋', en: 'ugly' },
-                    { value: 'duplicate', zh: '重复', en: 'duplicate' },
-                    { value: 'mutated', zh: '突变', en: 'mutated' }
+                    { value: 'ugly', zh: '丑陋', en: 'ugly' }
                 ]
             };
 
-            // 多镜头模板数据（略，同前，但可扩展）
+            // 多镜头模板数据
             const multiShotTemplates = {
                 ancient_fight: [
                     { subject: '两个古装侠客在竹林中对峙', action: ['confront'], emotion: 'determined', style: 'cinematic', effect: '', physics: '', camera: 'medium', lighting: 'volumetric', interaction: 'leaves', position: 'two-shot', negative: ['blurry'] },
@@ -642,8 +571,8 @@
                     { subject: '她缓缓悬浮起来，周身粒子环绕', action: ['levitate'], emotion: 'determined', style: 'sci-fi', effect: 'particle', physics: 'zero gravity', camera: 'pull out', lighting: 'neon', interaction: 'ruins', position: 'full', negative: ['blurry'] }
                 ],
                 fantasy_magic: [
-                    { subject: '魔法师高举法杖，天空乌云涌动', action: ['cast spell'], emotion: 'determined', style: 'anime', effect: 'magic', physics: '', camera: 'low angle', lighting: 'volumetric', interaction: 'fog', position: 'low-angle', negative: ['distorted face'] },
-                    { subject: '法杖顶端爆发出耀眼光芒', action: ['explode'], emotion: 'determined', style: 'anime', effect: 'bloom', physics: '', camera: 'close-up', lighting: 'glow', interaction: '', position: 'close-up', negative: ['flickering'] }
+                    { subject: '魔法师高举法杖，天空乌云涌动', action: ['cast spell'], emotion: 'determined', style: 'fantasy', effect: 'magic', physics: '', camera: 'low angle', lighting: 'volumetric', interaction: 'fog', position: 'low-angle', negative: ['distorted face'] },
+                    { subject: '法杖顶端爆发出耀眼光芒', action: ['explode'], emotion: 'determined', style: 'fantasy', effect: 'bloom', physics: '', camera: 'close-up', lighting: 'glow', interaction: '', position: 'close-up', negative: ['flickering'] }
                 ]
             };
 
@@ -654,7 +583,6 @@
                 setTimeout(() => toast.classList.remove('show'), 2000);
             }
 
-            // 防抖更新预览
             function debouncedUpdatePreview() {
                 if (updateTimeout) clearTimeout(updateTimeout);
                 updateTimeout = setTimeout(() => {
@@ -663,7 +591,6 @@
                 }, 200);
             }
 
-            // 更新所有下拉的语言（动态切换，不刷新）
             function updateAllLang() {
                 document.querySelectorAll('.shot-card').forEach(card => {
                     // 更新复选框文本
@@ -696,10 +623,10 @@
                 });
             }
 
-            // 创建镜头卡片（完整版，带权重、折叠、tooltip）
-            function createShotCard(shotId, shotData = {}, isCollapsed = false) {
+            // 创建镜头卡片
+            function createShotCard(shotId, shotData = {}) {
                 const card = document.createElement('div');
-                card.className = `shot-card collapsible ${isCollapsed ? '' : 'expanded'}`;
+                card.className = 'shot-card';
                 card.dataset.shotId = shotId;
 
                 // 头部
@@ -707,40 +634,36 @@
                 header.className = 'shot-header';
                 header.innerHTML = `
                     <div class="shot-title">
-                        <span>🎬 镜头 ${shotId}</span>
+                        <span>镜头 ${shotId}</span>
                         <div class="move-buttons">
                             <button class="move-up-btn" title="上移">⬆️</button>
                             <button class="move-down-btn" title="下移">⬇️</button>
                         </div>
                     </div>
                     <div class="shot-actions">
-                        <button class="copy-shot-btn">📋 复制</button>
-                        <button class="delete-shot-btn">🗑️ 删除</button>
-                        <button class="toggle-collapse-btn">${isCollapsed ? '🔽 展开' : '🔼 折叠'}</button>
+                        <button class="copy-shot-btn" title="复制">复制</button>
+                        <button class="delete-shot-btn" title="删除">删除</button>
                     </div>
                 `;
                 card.appendChild(header);
 
-                // 主体描述（始终可见）
+                // 主体描述
                 const subjectGroup = document.createElement('div');
-                subjectGroup.className = 'option-group always-visible';
-                subjectGroup.innerHTML = `
-                    <label>🧑 主体描述 <span class="badge tooltip">?<span class="tooltiptext">描述画面中的主要人物或物体，可写多人</span></span></label>
-                    <textarea class="shot-subject" rows="2">${shotData.subject || ''}</textarea>
-                `;
+                subjectGroup.className = 'option-group';
+                subjectGroup.innerHTML = `<label>主体</label><textarea class="shot-subject" rows="1">${shotData.subject || ''}</textarea>`;
                 card.appendChild(subjectGroup);
 
-                // 动作（带权重）
+                // 动作（复选框）
                 const actionGroup = document.createElement('div');
                 actionGroup.className = 'option-group';
                 actionGroup.innerHTML = `
-                    <label>🏃 动作 <span class="badge tooltip">?<span class="tooltiptext">可多选，拖动滑块调整权重</span></span></label>
+                    <label>动作</label>
                     <div class="checkbox-group shot-action-group"></div>
                     <div class="weight-control">
                         <input type="range" class="shot-action-weight" min="0.5" max="2" step="0.1" value="${shotData.actionWeight || 1}">
                         <span class="weight-value">${shotData.actionWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-action-custom" value="${shotData.actionCustom || ''}" placeholder="自定义动作"></div>
+                    <div class="custom-input"><input type="text" class="shot-action-custom" value="${shotData.actionCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(actionGroup);
                 const actionContainer = actionGroup.querySelector('.checkbox-group');
@@ -755,26 +678,18 @@
                     label.appendChild(document.createTextNode(currentLang === 'zh' ? item.zh : item.en));
                     actionContainer.appendChild(label);
                 });
-                // 权重滑块联动
-                const weightSlider = actionGroup.querySelector('.shot-action-weight');
-                const weightSpan = actionGroup.querySelector('.weight-value');
-                weightSlider.addEventListener('input', () => {
-                    weightSpan.textContent = weightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 情绪（带权重）
+                // 情绪下拉
                 const emotionGroup = document.createElement('div');
                 emotionGroup.className = 'option-group';
                 emotionGroup.innerHTML = `
-                    <label>😊 情绪 <span class="badge tooltip">?<span class="tooltiptext">选择情绪，可自定义</span></span></label>
-                    <select class="shot-emotion"><option value="">-- 请选择 --</option></select>
+                    <label>情绪</label>
+                    <select class="shot-emotion"><option value="">--</option></select>
                     <div class="weight-control">
                         <input type="range" class="shot-emotion-weight" min="0.5" max="2" step="0.1" value="${shotData.emotionWeight || 1}">
                         <span class="weight-value">${shotData.emotionWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-emotion-custom" value="${shotData.emotionCustom || ''}" placeholder="自定义情绪"></div>
+                    <div class="custom-input"><input type="text" class="shot-emotion-custom" value="${shotData.emotionCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(emotionGroup);
                 const emotionSelect = emotionGroup.querySelector('.shot-emotion');
@@ -787,25 +702,18 @@
                     if (item.value === shotData.emotion) opt.selected = true;
                     emotionSelect.appendChild(opt);
                 });
-                const emotionWeightSlider = emotionGroup.querySelector('.shot-emotion-weight');
-                const emotionWeightSpan = emotionGroup.querySelector('.weight-value');
-                emotionWeightSlider.addEventListener('input', () => {
-                    emotionWeightSpan.textContent = emotionWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 风格（带权重）
+                // 风格下拉
                 const styleGroup = document.createElement('div');
                 styleGroup.className = 'option-group';
                 styleGroup.innerHTML = `
-                    <label>🎨 风格 <span class="badge tooltip">?<span class="tooltiptext">选择电影/动漫/艺术风格</span></span></label>
-                    <select class="shot-style"><option value="">-- 请选择 --</option></select>
+                    <label>风格</label>
+                    <select class="shot-style"><option value="">--</option></select>
                     <div class="weight-control">
                         <input type="range" class="shot-style-weight" min="0.5" max="2" step="0.1" value="${shotData.styleWeight || 1}">
                         <span class="weight-value">${shotData.styleWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-style-custom" value="${shotData.styleCustom || ''}" placeholder="自定义风格"></div>
+                    <div class="custom-input"><input type="text" class="shot-style-custom" value="${shotData.styleCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(styleGroup);
                 const styleSelect = styleGroup.querySelector('.shot-style');
@@ -818,25 +726,18 @@
                     if (item.value === shotData.style) opt.selected = true;
                     styleSelect.appendChild(opt);
                 });
-                const styleWeightSlider = styleGroup.querySelector('.shot-style-weight');
-                const styleWeightSpan = styleGroup.querySelector('.weight-value');
-                styleWeightSlider.addEventListener('input', () => {
-                    styleWeightSpan.textContent = styleWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 运镜（带权重）
+                // 运镜下拉
                 const cameraGroup = document.createElement('div');
                 cameraGroup.className = 'option-group';
                 cameraGroup.innerHTML = `
-                    <label>🎥 运镜 <span class="badge tooltip">?<span class="tooltiptext">镜头运动方式</span></span></label>
-                    <select class="shot-camera"><option value="">-- 请选择 --</option></select>
+                    <label>运镜</label>
+                    <select class="shot-camera"><option value="">--</option></select>
                     <div class="weight-control">
                         <input type="range" class="shot-camera-weight" min="0.5" max="2" step="0.1" value="${shotData.cameraWeight || 1}">
                         <span class="weight-value">${shotData.cameraWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-camera-custom" value="${shotData.cameraCustom || ''}" placeholder="自定义运镜"></div>
+                    <div class="custom-input"><input type="text" class="shot-camera-custom" value="${shotData.cameraCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(cameraGroup);
                 const cameraSelect = cameraGroup.querySelector('.shot-camera');
@@ -849,25 +750,18 @@
                     if (item.value === shotData.camera) opt.selected = true;
                     cameraSelect.appendChild(opt);
                 });
-                const cameraWeightSlider = cameraGroup.querySelector('.shot-camera-weight');
-                const cameraWeightSpan = cameraGroup.querySelector('.weight-value');
-                cameraWeightSlider.addEventListener('input', () => {
-                    cameraWeightSpan.textContent = cameraWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 站位（带权重）
+                // 站位下拉
                 const positionGroup = document.createElement('div');
                 positionGroup.className = 'option-group';
                 positionGroup.innerHTML = `
-                    <label>📐 人物站位 <span class="badge tooltip">?<span class="tooltiptext">构图方式</span></span></label>
-                    <select class="shot-position"><option value="">-- 请选择 --</option></select>
+                    <label>站位</label>
+                    <select class="shot-position"><option value="">--</option></select>
                     <div class="weight-control">
                         <input type="range" class="shot-position-weight" min="0.5" max="2" step="0.1" value="${shotData.positionWeight || 1}">
                         <span class="weight-value">${shotData.positionWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-position-custom" value="${shotData.positionCustom || ''}" placeholder="自定义站位"></div>
+                    <div class="custom-input"><input type="text" class="shot-position-custom" value="${shotData.positionCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(positionGroup);
                 const positionSelect = positionGroup.querySelector('.shot-position');
@@ -880,25 +774,18 @@
                     if (item.value === shotData.position) opt.selected = true;
                     positionSelect.appendChild(opt);
                 });
-                const positionWeightSlider = positionGroup.querySelector('.shot-position-weight');
-                const positionWeightSpan = positionGroup.querySelector('.weight-value');
-                positionWeightSlider.addEventListener('input', () => {
-                    positionWeightSpan.textContent = positionWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 光影（带权重）
+                // 光影下拉
                 const lightingGroup = document.createElement('div');
                 lightingGroup.className = 'option-group';
                 lightingGroup.innerHTML = `
-                    <label>☀️ 光影 <span class="badge tooltip">?<span class="tooltiptext">光线氛围</span></span></label>
-                    <select class="shot-lighting"><option value="">-- 请选择 --</option></select>
+                    <label>光影</label>
+                    <select class="shot-lighting"><option value="">--</option></select>
                     <div class="weight-control">
                         <input type="range" class="shot-lighting-weight" min="0.5" max="2" step="0.1" value="${shotData.lightingWeight || 1}">
                         <span class="weight-value">${shotData.lightingWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-lighting-custom" value="${shotData.lightingCustom || ''}" placeholder="自定义光影"></div>
+                    <div class="custom-input"><input type="text" class="shot-lighting-custom" value="${shotData.lightingCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(lightingGroup);
                 const lightingSelect = lightingGroup.querySelector('.shot-lighting');
@@ -911,25 +798,18 @@
                     if (item.value === shotData.lighting) opt.selected = true;
                     lightingSelect.appendChild(opt);
                 });
-                const lightingWeightSlider = lightingGroup.querySelector('.shot-lighting-weight');
-                const lightingWeightSpan = lightingGroup.querySelector('.weight-value');
-                lightingWeightSlider.addEventListener('input', () => {
-                    lightingWeightSpan.textContent = lightingWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 特效（带权重）
+                // 特效下拉
                 const effectGroup = document.createElement('div');
                 effectGroup.className = 'option-group';
                 effectGroup.innerHTML = `
-                    <label>✨ 特效 <span class="badge tooltip">?<span class="tooltiptext">视觉特效</span></span></label>
-                    <select class="shot-effect"><option value="">-- 请选择 --</option></select>
+                    <label>特效</label>
+                    <select class="shot-effect"><option value="">--</option></select>
                     <div class="weight-control">
                         <input type="range" class="shot-effect-weight" min="0.5" max="2" step="0.1" value="${shotData.effectWeight || 1}">
                         <span class="weight-value">${shotData.effectWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-effect-custom" value="${shotData.effectCustom || ''}" placeholder="自定义特效"></div>
+                    <div class="custom-input"><input type="text" class="shot-effect-custom" value="${shotData.effectCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(effectGroup);
                 const effectSelect = effectGroup.querySelector('.shot-effect');
@@ -942,25 +822,18 @@
                     if (item.value === shotData.effect) opt.selected = true;
                     effectSelect.appendChild(opt);
                 });
-                const effectWeightSlider = effectGroup.querySelector('.shot-effect-weight');
-                const effectWeightSpan = effectGroup.querySelector('.weight-value');
-                effectWeightSlider.addEventListener('input', () => {
-                    effectWeightSpan.textContent = effectWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 物理（带权重）
+                // 物理下拉
                 const physicsGroup = document.createElement('div');
                 physicsGroup.className = 'option-group';
                 physicsGroup.innerHTML = `
-                    <label>⚡ 物理 <span class="badge tooltip">?<span class="tooltiptext">运动物理效果</span></span></label>
-                    <select class="shot-physics"><option value="">-- 请选择 --</option></select>
+                    <label>物理</label>
+                    <select class="shot-physics"><option value="">--</option></select>
                     <div class="weight-control">
                         <input type="range" class="shot-physics-weight" min="0.5" max="2" step="0.1" value="${shotData.physicsWeight || 1}">
                         <span class="weight-value">${shotData.physicsWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-physics-custom" value="${shotData.physicsCustom || ''}" placeholder="自定义物理"></div>
+                    <div class="custom-input"><input type="text" class="shot-physics-custom" value="${shotData.physicsCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(physicsGroup);
                 const physicsSelect = physicsGroup.querySelector('.shot-physics');
@@ -973,25 +846,18 @@
                     if (item.value === shotData.physics) opt.selected = true;
                     physicsSelect.appendChild(opt);
                 });
-                const physicsWeightSlider = physicsGroup.querySelector('.shot-physics-weight');
-                const physicsWeightSpan = physicsGroup.querySelector('.weight-value');
-                physicsWeightSlider.addEventListener('input', () => {
-                    physicsWeightSpan.textContent = physicsWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 互动（带权重）
+                // 互动下拉
                 const interactionGroup = document.createElement('div');
                 interactionGroup.className = 'option-group';
                 interactionGroup.innerHTML = `
-                    <label>🌳 互动 <span class="badge tooltip">?<span class="tooltiptext">与背景的交互</span></span></label>
-                    <select class="shot-interaction"><option value="">-- 请选择 --</option></select>
+                    <label>互动</label>
+                    <select class="shot-interaction"><option value="">--</option></select>
                     <div class="weight-control">
                         <input type="range" class="shot-interaction-weight" min="0.5" max="2" step="0.1" value="${shotData.interactionWeight || 1}">
                         <span class="weight-value">${shotData.interactionWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-interaction-custom" value="${shotData.interactionCustom || ''}" placeholder="自定义互动"></div>
+                    <div class="custom-input"><input type="text" class="shot-interaction-custom" value="${shotData.interactionCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(interactionGroup);
                 const interactionSelect = interactionGroup.querySelector('.shot-interaction');
@@ -1004,25 +870,18 @@
                     if (item.value === shotData.interaction) opt.selected = true;
                     interactionSelect.appendChild(opt);
                 });
-                const interactionWeightSlider = interactionGroup.querySelector('.shot-interaction-weight');
-                const interactionWeightSpan = interactionGroup.querySelector('.weight-value');
-                interactionWeightSlider.addEventListener('input', () => {
-                    interactionWeightSpan.textContent = interactionWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
-                });
 
-                // 负面词（带权重）
+                // 负面词（复选框）
                 const negativeGroup = document.createElement('div');
                 negativeGroup.className = 'option-group';
                 negativeGroup.innerHTML = `
-                    <label>⚠️ 负面词 <span class="badge tooltip">?<span class="tooltiptext">要避免的内容，可多选</span></span></label>
+                    <label>负面</label>
                     <div class="checkbox-group shot-negative-group"></div>
                     <div class="weight-control">
                         <input type="range" class="shot-negative-weight" min="0.5" max="2" step="0.1" value="${shotData.negativeWeight || 1}">
                         <span class="weight-value">${shotData.negativeWeight || 1}</span>
                     </div>
-                    <div class="custom-input"><input type="text" class="shot-negative-custom" value="${shotData.negativeCustom || ''}" placeholder="自定义负面词"></div>
+                    <div class="custom-input"><input type="text" class="shot-negative-custom" value="${shotData.negativeCustom || ''}" placeholder="自定义"></div>
                 `;
                 card.appendChild(negativeGroup);
                 const negativeContainer = negativeGroup.querySelector('.checkbox-group');
@@ -1037,18 +896,21 @@
                     label.appendChild(document.createTextNode(currentLang === 'zh' ? item.zh : item.en));
                     negativeContainer.appendChild(label);
                 });
-                const negativeWeightSlider = negativeGroup.querySelector('.shot-negative-weight');
-                const negativeWeightSpan = negativeGroup.querySelector('.weight-value');
-                negativeWeightSlider.addEventListener('input', () => {
-                    negativeWeightSpan.textContent = negativeWeightSlider.value;
-                    debouncedUpdatePreview();
-                    saveToLocalStorage();
+
+                // 绑定滑块事件
+                card.querySelectorAll('input[type=range]').forEach(slider => {
+                    const span = slider.nextElementSibling;
+                    slider.addEventListener('input', () => {
+                        span.textContent = slider.value;
+                        debouncedUpdatePreview();
+                        saveToLocalStorage();
+                    });
                 });
 
                 return card;
             }
 
-            // 收集镜头数据（带权重）
+            // 收集镜头数据
             function collectShotData(card) {
                 return {
                     subject: card.querySelector('.shot-subject').value,
@@ -1085,7 +947,11 @@
                 };
             }
 
-            // 生成单个镜头提示词（带权重）
+            function collectAllShots() {
+                return Array.from(document.querySelectorAll('.shot-card')).map(card => collectShotData(card));
+            }
+
+            // 生成单个镜头提示词（带分类前缀）
             function generateShotPrompt(shotData) {
                 const parts = [];
                 if (shotData.subject) parts.push(shotData.subject);
@@ -1098,10 +964,11 @@
                 if (shotData.actionCustom) actionTexts.push(shotData.actionCustom);
                 if (actionTexts.length) {
                     const joined = actionTexts.join('，');
+                    const prefix = currentLang === 'zh' ? '动作：' : 'Action: ';
                     if (shotData.actionWeight && shotData.actionWeight !== 1) {
-                        parts.push(`(${joined}:${shotData.actionWeight})`);
+                        parts.push(`${prefix}(${joined}:${shotData.actionWeight})`);
                     } else {
-                        parts.push(joined);
+                        parts.push(prefix + joined);
                     }
                 }
 
@@ -1111,62 +978,11 @@
                 if (emotionItem) emotionText = currentLang === 'zh' ? emotionItem.zh : emotionItem.en;
                 if (shotData.emotionCustom) emotionText = (emotionText ? emotionText + '，' : '') + shotData.emotionCustom;
                 if (emotionText) {
+                    const prefix = currentLang === 'zh' ? '情绪：' : 'Emotion: ';
                     if (shotData.emotionWeight && shotData.emotionWeight !== 1) {
-                        parts.push(`(${emotionText}:${shotData.emotionWeight})`);
+                        parts.push(`${prefix}(${emotionText}:${shotData.emotionWeight})`);
                     } else {
-                        parts.push(emotionText);
-                    }
-                }
-
-                // 互动
-                const interactionItem = optionData.interaction.find(i => i.value === shotData.interaction);
-                let interactionText = '';
-                if (interactionItem) interactionText = currentLang === 'zh' ? interactionItem.zh : interactionItem.en;
-                if (shotData.interactionCustom) interactionText = (interactionText ? interactionText + '，' : '') + shotData.interactionCustom;
-                if (interactionText) {
-                    if (shotData.interactionWeight && shotData.interactionWeight !== 1) {
-                        parts.push(`(${interactionText}:${shotData.interactionWeight})`);
-                    } else {
-                        parts.push(interactionText);
-                    }
-                }
-
-                // 站位
-                const positionItem = optionData.position.find(i => i.value === shotData.position);
-                let positionText = '';
-                if (positionItem) positionText = currentLang === 'zh' ? positionItem.zh : positionItem.en;
-                if (shotData.positionCustom) positionText = (positionText ? positionText + '，' : '') + shotData.positionCustom;
-                if (positionText) {
-                    if (shotData.positionWeight && shotData.positionWeight !== 1) {
-                        parts.push(`(${positionText}:${shotData.positionWeight})`);
-                    } else {
-                        parts.push(positionText);
-                    }
-                }
-
-                // 运镜
-                const cameraItem = optionData.camera.find(i => i.value === shotData.camera);
-                let cameraText = '';
-                if (cameraItem) cameraText = currentLang === 'zh' ? cameraItem.zh : cameraItem.en;
-                if (shotData.cameraCustom) cameraText = (cameraText ? cameraText + '，' : '') + shotData.cameraCustom;
-                if (cameraText) {
-                    if (shotData.cameraWeight && shotData.cameraWeight !== 1) {
-                        parts.push(`(${cameraText}:${shotData.cameraWeight})`);
-                    } else {
-                        parts.push(cameraText);
-                    }
-                }
-
-                // 光影
-                const lightingItem = optionData.lighting.find(i => i.value === shotData.lighting);
-                let lightingText = '';
-                if (lightingItem) lightingText = currentLang === 'zh' ? lightingItem.zh : lightingItem.en;
-                if (shotData.lightingCustom) lightingText = (lightingText ? lightingText + '，' : '') + shotData.lightingCustom;
-                if (lightingText) {
-                    if (shotData.lightingWeight && shotData.lightingWeight !== 1) {
-                        parts.push(`(${lightingText}:${shotData.lightingWeight})`);
-                    } else {
-                        parts.push(lightingText);
+                        parts.push(prefix + emotionText);
                     }
                 }
 
@@ -1176,10 +992,53 @@
                 if (styleItem) styleText = currentLang === 'zh' ? styleItem.zh : styleItem.en;
                 if (shotData.styleCustom) styleText = (styleText ? styleText + '，' : '') + shotData.styleCustom;
                 if (styleText) {
+                    const prefix = currentLang === 'zh' ? '风格：' : 'Style: ';
                     if (shotData.styleWeight && shotData.styleWeight !== 1) {
-                        parts.push(`(${styleText}:${shotData.styleWeight})`);
+                        parts.push(`${prefix}(${styleText}:${shotData.styleWeight})`);
                     } else {
-                        parts.push(styleText);
+                        parts.push(prefix + styleText);
+                    }
+                }
+
+                // 运镜
+                const cameraItem = optionData.camera.find(i => i.value === shotData.camera);
+                let cameraText = '';
+                if (cameraItem) cameraText = currentLang === 'zh' ? cameraItem.zh : cameraItem.en;
+                if (shotData.cameraCustom) cameraText = (cameraText ? cameraText + '，' : '') + shotData.cameraCustom;
+                if (cameraText) {
+                    const prefix = currentLang === 'zh' ? '运镜：' : 'Camera: ';
+                    if (shotData.cameraWeight && shotData.cameraWeight !== 1) {
+                        parts.push(`${prefix}(${cameraText}:${shotData.cameraWeight})`);
+                    } else {
+                        parts.push(prefix + cameraText);
+                    }
+                }
+
+                // 站位
+                const positionItem = optionData.position.find(i => i.value === shotData.position);
+                let positionText = '';
+                if (positionItem) positionText = currentLang === 'zh' ? positionItem.zh : positionItem.en;
+                if (shotData.positionCustom) positionText = (positionText ? positionText + '，' : '') + shotData.positionCustom;
+                if (positionText) {
+                    const prefix = currentLang === 'zh' ? '站位：' : 'Position: ';
+                    if (shotData.positionWeight && shotData.positionWeight !== 1) {
+                        parts.push(`${prefix}(${positionText}:${shotData.positionWeight})`);
+                    } else {
+                        parts.push(prefix + positionText);
+                    }
+                }
+
+                // 光影
+                const lightingItem = optionData.lighting.find(i => i.value === shotData.lighting);
+                let lightingText = '';
+                if (lightingItem) lightingText = currentLang === 'zh' ? lightingItem.zh : lightingItem.en;
+                if (shotData.lightingCustom) lightingText = (lightingText ? lightingText + '，' : '') + shotData.lightingCustom;
+                if (lightingText) {
+                    const prefix = currentLang === 'zh' ? '光影：' : 'Lighting: ';
+                    if (shotData.lightingWeight && shotData.lightingWeight !== 1) {
+                        parts.push(`${prefix}(${lightingText}:${shotData.lightingWeight})`);
+                    } else {
+                        parts.push(prefix + lightingText);
                     }
                 }
 
@@ -1189,10 +1048,11 @@
                 if (effectItem) effectText = currentLang === 'zh' ? effectItem.zh : effectItem.en;
                 if (shotData.effectCustom) effectText = (effectText ? effectText + '，' : '') + shotData.effectCustom;
                 if (effectText) {
+                    const prefix = currentLang === 'zh' ? '特效：' : 'Effect: ';
                     if (shotData.effectWeight && shotData.effectWeight !== 1) {
-                        parts.push(`(${effectText}:${shotData.effectWeight})`);
+                        parts.push(`${prefix}(${effectText}:${shotData.effectWeight})`);
                     } else {
-                        parts.push(effectText);
+                        parts.push(prefix + effectText);
                     }
                 }
 
@@ -1202,16 +1062,31 @@
                 if (physicsItem) physicsText = currentLang === 'zh' ? physicsItem.zh : physicsItem.en;
                 if (shotData.physicsCustom) physicsText = (physicsText ? physicsText + '，' : '') + shotData.physicsCustom;
                 if (physicsText) {
+                    const prefix = currentLang === 'zh' ? '物理：' : 'Physics: ';
                     if (shotData.physicsWeight && shotData.physicsWeight !== 1) {
-                        parts.push(`(${physicsText}:${shotData.physicsWeight})`);
+                        parts.push(`${prefix}(${physicsText}:${shotData.physicsWeight})`);
                     } else {
-                        parts.push(physicsText);
+                        parts.push(prefix + physicsText);
+                    }
+                }
+
+                // 互动
+                const interactionItem = optionData.interaction.find(i => i.value === shotData.interaction);
+                let interactionText = '';
+                if (interactionItem) interactionText = currentLang === 'zh' ? interactionItem.zh : interactionItem.en;
+                if (shotData.interactionCustom) interactionText = (interactionText ? interactionText + '，' : '') + shotData.interactionCustom;
+                if (interactionText) {
+                    const prefix = currentLang === 'zh' ? '互动：' : 'Interaction: ';
+                    if (shotData.interactionWeight && shotData.interactionWeight !== 1) {
+                        parts.push(`${prefix}(${interactionText}:${shotData.interactionWeight})`);
+                    } else {
+                        parts.push(prefix + interactionText);
                     }
                 }
 
                 let prompt = parts.join('，');
 
-                // 负面（平台适配，权重暂不加到负面）
+                // 负面
                 const negativeTexts = [];
                 shotData.negative.forEach(v => {
                     const item = optionData.negative.find(i => i.value === v);
@@ -1231,7 +1106,6 @@
                 return prompt;
             }
 
-            // 更新总预览
             function updatePreview() {
                 const shots = collectAllShots();
                 if (shots.length === 0) {
@@ -1242,20 +1116,13 @@
                 previewTextarea.value = shotPrompts.join('\n\n');
             }
 
-            function collectAllShots() {
-                return Array.from(document.querySelectorAll('.shot-card')).map(card => collectShotData(card));
-            }
-
-            // 保存配置到localStorage
             function saveToLocalStorage() {
                 const shots = collectAllShots();
-                localStorage.setItem('directorFull', JSON.stringify(shots));
-                // 不弹toast，避免频繁提示
+                localStorage.setItem('promptBuilderSimple', JSON.stringify(shots));
             }
 
-            // 加载配置
             function loadFromLocalStorage() {
-                const saved = localStorage.getItem('directorFull');
+                const saved = localStorage.getItem('promptBuilderSimple');
                 if (!saved) { showToast('无保存配置'); return; }
                 try {
                     const shots = JSON.parse(saved);
@@ -1263,7 +1130,7 @@
                     shotCounter = 0;
                     shots.forEach(data => {
                         const newId = ++shotCounter;
-                        const card = createShotCard(newId, data, false);
+                        const card = createShotCard(newId, data);
                         shotsContainer.appendChild(card);
                         bindShotEvents(card);
                     });
@@ -1272,42 +1139,34 @@
                 } catch { showToast('加载失败'); }
             }
 
-            // 清空所有
             function clearAll() {
                 shotsContainer.innerHTML = '';
                 shotCounter = 0;
                 const newId = ++shotCounter;
-                const card = createShotCard(newId, {}, false);
+                const card = createShotCard(newId, {});
                 shotsContainer.appendChild(card);
                 bindShotEvents(card);
                 updatePreview();
                 saveToLocalStorage();
             }
 
-            // 绑定镜头事件（包括折叠、移动、复制、删除等）
+            // 绑定镜头事件
             function bindShotEvents(card) {
-                // 所有输入变化实时更新预览并保存
                 card.querySelectorAll('input, select, textarea').forEach(el => {
                     el.addEventListener('input', debouncedUpdatePreview);
                     el.addEventListener('change', debouncedUpdatePreview);
                 });
-                // 额外监听滑块变化（已单独加过，但为保险再加）
-                card.querySelectorAll('input[type=range]').forEach(slider => {
-                    slider.addEventListener('input', debouncedUpdatePreview);
-                });
 
-                // 复制镜头
                 card.querySelector('.copy-shot-btn').addEventListener('click', () => {
                     const data = collectShotData(card);
                     const newId = ++shotCounter;
-                    const newCard = createShotCard(newId, data, card.classList.contains('expanded'));
+                    const newCard = createShotCard(newId, data);
                     shotsContainer.appendChild(newCard);
                     bindShotEvents(newCard);
                     updatePreview();
                     saveToLocalStorage();
                 });
 
-                // 删除镜头
                 card.querySelector('.delete-shot-btn').addEventListener('click', () => {
                     if (document.querySelectorAll('.shot-card').length <= 1) {
                         alert('至少保留一个镜头');
@@ -1318,14 +1177,6 @@
                     saveToLocalStorage();
                 });
 
-                // 折叠/展开
-                const toggleBtn = card.querySelector('.toggle-collapse-btn');
-                toggleBtn.addEventListener('click', () => {
-                    card.classList.toggle('expanded');
-                    toggleBtn.textContent = card.classList.contains('expanded') ? '🔼 折叠' : '🔽 展开';
-                });
-
-                // 上移/下移
                 const upBtn = card.querySelector('.move-up-btn');
                 const downBtn = card.querySelector('.move-down-btn');
                 upBtn.addEventListener('click', () => {
@@ -1346,7 +1197,7 @@
                 });
             }
 
-            // 语言切换（动态更新）
+            // 语言切换
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
@@ -1367,7 +1218,7 @@
                 });
             });
 
-            // 多镜头模板应用
+            // 模板应用
             document.querySelectorAll('.template-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tmpl = multiShotTemplates[btn.dataset.template];
@@ -1387,110 +1238,12 @@
                         shotData.physicsWeight = shotData.physicsWeight || 1;
                         shotData.interactionWeight = shotData.interactionWeight || 1;
                         shotData.negativeWeight = shotData.negativeWeight || 1;
-                        const card = createShotCard(newId, shotData, false);
+                        const card = createShotCard(newId, shotData);
                         shotsContainer.appendChild(card);
                         bindShotEvents(card);
                     });
                     updatePreview();
                     saveToLocalStorage();
-                });
-            });
-
-            // 批量工具：复制当前镜头到所有
-            document.getElementById('applyToAllBtn').addEventListener('click', () => {
-                const cards = document.querySelectorAll('.shot-card');
-                if (cards.length === 0) return;
-                const firstData = collectShotData(cards[0]);
-                cards.forEach((card, idx) => {
-                    if (idx === 0) return;
-                    // 更新card的值
-                    card.querySelector('.shot-subject').value = firstData.subject;
-                    // 动作
-                    card.querySelectorAll('.shot-action-cb').forEach(cb => cb.checked = false);
-                    firstData.action.forEach(val => {
-                        const cb = card.querySelector(`.shot-action-cb[value="${val}"]`);
-                        if (cb) cb.checked = true;
-                    });
-                    card.querySelector('.shot-action-custom').value = firstData.actionCustom;
-                    card.querySelector('.shot-action-weight').value = firstData.actionWeight;
-                    card.querySelector('.shot-action-weight + .weight-value').textContent = firstData.actionWeight;
-
-                    // 情绪
-                    card.querySelector('.shot-emotion').value = firstData.emotion;
-                    card.querySelector('.shot-emotion-custom').value = firstData.emotionCustom;
-                    card.querySelector('.shot-emotion-weight').value = firstData.emotionWeight;
-                    card.querySelector('.shot-emotion-weight + .weight-value').textContent = firstData.emotionWeight;
-
-                    // 风格
-                    card.querySelector('.shot-style').value = firstData.style;
-                    card.querySelector('.shot-style-custom').value = firstData.styleCustom;
-                    card.querySelector('.shot-style-weight').value = firstData.styleWeight;
-                    card.querySelector('.shot-style-weight + .weight-value').textContent = firstData.styleWeight;
-
-                    // 运镜
-                    card.querySelector('.shot-camera').value = firstData.camera;
-                    card.querySelector('.shot-camera-custom').value = firstData.cameraCustom;
-                    card.querySelector('.shot-camera-weight').value = firstData.cameraWeight;
-                    card.querySelector('.shot-camera-weight + .weight-value').textContent = firstData.cameraWeight;
-
-                    // 站位
-                    card.querySelector('.shot-position').value = firstData.position;
-                    card.querySelector('.shot-position-custom').value = firstData.positionCustom;
-                    card.querySelector('.shot-position-weight').value = firstData.positionWeight;
-                    card.querySelector('.shot-position-weight + .weight-value').textContent = firstData.positionWeight;
-
-                    // 光影
-                    card.querySelector('.shot-lighting').value = firstData.lighting;
-                    card.querySelector('.shot-lighting-custom').value = firstData.lightingCustom;
-                    card.querySelector('.shot-lighting-weight').value = firstData.lightingWeight;
-                    card.querySelector('.shot-lighting-weight + .weight-value').textContent = firstData.lightingWeight;
-
-                    // 特效
-                    card.querySelector('.shot-effect').value = firstData.effect;
-                    card.querySelector('.shot-effect-custom').value = firstData.effectCustom;
-                    card.querySelector('.shot-effect-weight').value = firstData.effectWeight;
-                    card.querySelector('.shot-effect-weight + .weight-value').textContent = firstData.effectWeight;
-
-                    // 物理
-                    card.querySelector('.shot-physics').value = firstData.physics;
-                    card.querySelector('.shot-physics-custom').value = firstData.physicsCustom;
-                    card.querySelector('.shot-physics-weight').value = firstData.physicsWeight;
-                    card.querySelector('.shot-physics-weight + .weight-value').textContent = firstData.physicsWeight;
-
-                    // 互动
-                    card.querySelector('.shot-interaction').value = firstData.interaction;
-                    card.querySelector('.shot-interaction-custom').value = firstData.interactionCustom;
-                    card.querySelector('.shot-interaction-weight').value = firstData.interactionWeight;
-                    card.querySelector('.shot-interaction-weight + .weight-value').textContent = firstData.interactionWeight;
-
-                    // 负面
-                    card.querySelectorAll('.shot-negative-cb').forEach(cb => cb.checked = false);
-                    firstData.negative.forEach(val => {
-                        const cb = card.querySelector(`.shot-negative-cb[value="${val}"]`);
-                        if (cb) cb.checked = true;
-                    });
-                    card.querySelector('.shot-negative-custom').value = firstData.negativeCustom;
-                    card.querySelector('.shot-negative-weight').value = firstData.negativeWeight;
-                    card.querySelector('.shot-negative-weight + .weight-value').textContent = firstData.negativeWeight;
-                });
-                updatePreview();
-                saveToLocalStorage();
-                showToast('已应用到所有镜头');
-            });
-
-            // 折叠/展开所有
-            document.getElementById('collapseAllBtn').addEventListener('click', () => {
-                document.querySelectorAll('.shot-card').forEach(card => {
-                    card.classList.remove('expanded');
-                    const btn = card.querySelector('.toggle-collapse-btn');
-                    if (btn) btn.textContent = '🔽 展开';
-                });
-            });
-            document.getElementById('expandAllBtn').addEventListener('click', () => {
-                document.querySelectorAll('.shot-card').forEach(card => {
-                    card.classList.add('expanded');
-                    const btn = card.querySelector('.toggle-collapse-btn');
-                    if (btn) btn.textContent = '🔼 折叠';
                 });
             });
 
@@ -1523,7 +1276,7 @@
                         shotCounter = 0;
                         shots.forEach(data => {
                             const newId = ++shotCounter;
-                            const card = createShotCard(newId, data, false);
+                            const card = createShotCard(newId, data);
                             shotsContainer.appendChild(card);
                             bindShotEvents(card);
                         });
@@ -1541,7 +1294,7 @@
             // 添加镜头按钮
             document.getElementById('addShotBtn').addEventListener('click', () => {
                 const newId = ++shotCounter;
-                const card = createShotCard(newId, {}, false);
+                const card = createShotCard(newId, {});
                 shotsContainer.appendChild(card);
                 bindShotEvents(card);
                 updatePreview();
@@ -1561,7 +1314,7 @@
 
             // 初始化
             (function init() {
-                const saved = localStorage.getItem('directorFull');
+                const saved = localStorage.getItem('promptBuilderSimple');
                 if (saved) {
                     try {
                         const shots = JSON.parse(saved);
@@ -1569,13 +1322,12 @@
                         shotCounter = 0;
                         shots.forEach(data => {
                             const newId = ++shotCounter;
-                            const card = createShotCard(newId, data, false);
+                            const card = createShotCard(newId, data);
                             shotsContainer.appendChild(card);
                             bindShotEvents(card);
                         });
                         updatePreview();
                     } catch {
-                        // 默认新建
                         clearAll();
                     }
                 } else {
