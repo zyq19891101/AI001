@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AI短剧提示词构建器 · 多镜头导演版（完整预设）</title>
+    <title>AI短剧提示词构建器 · 导演完全版</title>
     <style>
-        /* 完整样式，与之前一致，此处保留核心 */
+        /* 完整样式，与之前一致 */
         * {
             margin: 0;
             padding: 0;
@@ -19,7 +19,7 @@
             justify-content: center;
         }
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             width: 100%;
             background: #1a2332;
             border-radius: 32px;
@@ -56,6 +56,19 @@
             background: #3b82f6;
             color: white;
         }
+        .export-import {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+        .icon-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+        }
         .builder-body {
             padding: 32px;
             background: #111827;
@@ -72,6 +85,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
+            margin-bottom: 10px;
         }
         .template-btn {
             background: #0f172a;
@@ -80,6 +94,12 @@
             border-radius: 40px;
             cursor: pointer;
             border: 1px solid #334155;
+        }
+        .batch-tools {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            flex-wrap: wrap;
         }
         .shots-container {
             display: flex;
@@ -97,11 +117,15 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 16px;
+            align-items: center;
         }
         .shot-title {
             font-size: 1.2rem;
             font-weight: 600;
             color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .shot-actions button {
             background: #0f172a;
@@ -111,6 +135,15 @@
             border-radius: 30px;
             cursor: pointer;
             margin-left: 8px;
+        }
+        .move-buttons button {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            padding: 4px 8px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 0 2px;
         }
         .options-grid {
             display: grid;
@@ -128,6 +161,9 @@
             font-weight: 600;
             margin-bottom: 8px;
             color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .option-group select, .option-group input, .option-group textarea {
             width: 100%;
@@ -154,6 +190,32 @@
             font-size: 0.9rem;
             cursor: pointer;
             border: 1px solid #334155;
+        }
+        .weight-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .weight-control input[type="range"] {
+            width: 100px;
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            -webkit-appearance: none;
+        }
+        .weight-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .weight-control span {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            min-width: 35px;
         }
         .custom-input {
             margin-top: 10px;
@@ -229,6 +291,7 @@
             border: 1px solid #3b82f6;
             transform: translateY(100px);
             transition: 0.3s;
+            z-index: 1000;
         }
         .toast.show {
             transform: translateY(0);
@@ -240,14 +303,55 @@
             border-radius: 30px;
             font-size: 0.7rem;
             margin-left: 8px;
+            cursor: help;
+        }
+        .collapsible .option-group:not(.always-visible) {
+            display: none;
+        }
+        .collapsible.expanded .option-group:not(.always-visible) {
+            display: block;
+        }
+        .toggle-link {
+            color: #3b82f6;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            display: inline-block;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1e293b;
+            color: #e2e8f0;
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+            border: 1px solid #3b82f6;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 AI短剧提示词构建器 · 多镜头导演版 <span class="badge">完整预设</span></h1>
-            <p>每个镜头可独立设置：主体、动作、情绪、风格、特效、物理、运镜、光影、互动、站位、负面词（均有预设+自定义）</p>
+            <h1>🎬 AI短剧提示词构建器 · 导演完全版 <span class="badge" title="所有选项均支持权重和自定义">v6.0</span></h1>
+            <p>多镜头 · 智能推荐 · 权重控制 · 批量操作 · 导出/导入 · 折叠面板 · 拖拽排序 · 完整预设</p>
             <div class="toolbar">
                 <div class="lang-switch">
                     <button class="lang-btn active" data-lang="zh">中文</button>
@@ -258,22 +362,28 @@
                     <button class="platform-btn" data-platform="midjourney">🎨 Midjourney</button>
                     <button class="platform-btn" data-platform="stable diffusion">⚡ Stable Diffusion</button>
                 </div>
+                <div class="export-import">
+                    <button class="icon-btn" id="exportConfigBtn">📤 导出配置</button>
+                    <button class="icon-btn" id="importConfigBtn">📥 导入配置</button>
+                    <input type="file" id="importFile" accept=".json" style="display:none;">
+                </div>
             </div>
         </div>
 
         <div class="builder-body">
-            <!-- 模板库（一键填充第一个镜头） -->
+            <!-- 模板库（多镜头模板） -->
             <div class="template-library">
-                <h3>📚 场景模板库 <span class="badge">点击填充第一个镜头</span></h3>
+                <h3>📚 多镜头模板库 <span class="badge" title="点击一键生成多镜头故事板">v2.0</span></h3>
                 <div class="template-buttons">
-                    <button class="template-btn" data-template="ancient_fight">⚔️ 古风打斗</button>
-                    <button class="template-btn" data-template="urban_love">💔 都市虐恋</button>
-                    <button class="template-btn" data-template="scifi_awakening">🤖 科幻觉醒</button>
-                    <button class="template-btn" data-template="fantasy_magic">🧙 奇幻魔法</button>
-                    <button class="template-btn" data-template="horror_escape">👻 恐怖逃亡</button>
-                    <button class="template-btn" data-template="comedy_slapstick">😂 喜剧夸张</button>
-                    <button class="template-btn" data-template="historical_epic">🏯 历史史诗</button>
-                    <button class="template-btn" data-template="mecha_battle">🤖 机甲对战</button>
+                    <button class="template-btn" data-template="ancient_fight">⚔️ 古风打斗 (3镜头)</button>
+                    <button class="template-btn" data-template="urban_love">💔 都市虐恋 (3镜头)</button>
+                    <button class="template-btn" data-template="scifi_awakening">🤖 科幻觉醒 (2镜头)</button>
+                    <button class="template-btn" data-template="fantasy_magic">🧙 奇幻魔法 (2镜头)</button>
+                </div>
+                <div class="batch-tools">
+                    <button class="icon-btn" id="applyToAllBtn">📋 复制当前镜头到所有</button>
+                    <button class="icon-btn" id="collapseAllBtn">🔽 折叠所有镜头</button>
+                    <button class="icon-btn" id="expandAllBtn">🔼 展开所有镜头</button>
                 </div>
             </div>
 
@@ -294,21 +404,25 @@
             </div>
         </div>
 
-        <div class="footer">⚡ 所有选项均有预设，也可自定义输入</div>
+        <div class="footer">
+            ⚡ 所有分类均有丰富预设，可自定义 | 悬停问号看说明
+        </div>
     </div>
 
     <div class="toast" id="toast">✅ 已复制</div>
 
     <script>
         (function() {
+            // ---------- 全局变量 ----------
             let currentLang = 'zh';
             let currentPlatform = '通用';
             const toast = document.getElementById('toast');
             let shotCounter = 0;
             const shotsContainer = document.getElementById('shotsContainer');
             const previewTextarea = document.getElementById('preview');
+            let updateTimeout = null;
 
-            // ---------- 完整预设数据 ----------
+            // ---------- 完整预设数据（所有分类均有丰富选项）----------
             const optionData = {
                 action: [
                     { value: 'slowly turn', zh: '缓缓转身', en: 'slowly turn' },
@@ -326,7 +440,23 @@
                     { value: 'explode', zh: '爆炸特效', en: 'explode with particles' },
                     { value: 'transform', zh: '形态变换', en: 'transform shape' },
                     { value: 'levitate', zh: '悬浮空中', en: 'levitate in air' },
-                    { value: 'disintegrate', zh: '分解消散', en: 'disintegrate into particles' }
+                    { value: 'disintegrate', zh: '分解消散', en: 'disintegrate into particles' },
+                    { value: 'crouch', zh: '蹲下', en: 'crouch' },
+                    { value: 'lie down', zh: '躺下', en: 'lie down' },
+                    { value: 'sit', zh: '坐下', en: 'sit' },
+                    { value: 'stand up', zh: '站起', en: 'stand up' },
+                    { value: 'fall', zh: '摔倒', en: 'fall' },
+                    { value: 'roll', zh: '翻滚', en: 'roll' },
+                    { value: 'climb', zh: '攀爬', en: 'climb' },
+                    { value: 'swim', zh: '游泳', en: 'swim' },
+                    { value: 'fly', zh: '飞翔', en: 'fly' },
+                    { value: 'teleport', zh: '瞬间移动', en: 'teleport' },
+                    { value: 'summon', zh: '召唤', en: 'summon' },
+                    { value: 'cast spell', zh: '施法', en: 'cast spell' },
+                    { value: 'shoot', zh: '射击', en: 'shoot' },
+                    { value: 'stab', zh: '刺击', en: 'stab' },
+                    { value: 'block', zh: '格挡', en: 'block' },
+                    { value: 'dodge', zh: '闪避', en: 'dodge' }
                 ],
                 emotion: [
                     { value: 'smiling gentle', zh: '面带微笑，眼神温柔', en: 'smiling, gentle eyes' },
@@ -340,82 +470,126 @@
                     { value: 'dazed', zh: '神情恍惚', en: 'dazed expression' },
                     { value: 'gnash', zh: '咬牙切齿', en: 'gnashing teeth' },
                     { value: 'joyful', zh: '眉开眼笑', en: 'beaming with joy' },
-                    { value: 'surprised', zh: '惊讶地张嘴', en: 'mouth open in surprise' }
+                    { value: 'surprised', zh: '惊讶地张嘴', en: 'mouth open in surprise' },
+                    { value: 'confused', zh: '困惑', en: 'confused' },
+                    { value: 'excited', zh: '兴奋', en: 'excited' },
+                    { value: 'nervous', zh: '紧张', en: 'nervous' },
+                    { value: 'calm', zh: '平静', en: 'calm' },
+                    { value: 'proud', zh: '骄傲', en: 'proud' },
+                    { value: 'ashamed', zh: '羞愧', en: 'ashamed' },
+                    { value: 'jealous', zh: '嫉妒', en: 'jealous' },
+                    { value: 'hopeful', zh: '充满希望', en: 'hopeful' },
+                    { value: 'desperate', zh: '绝望', en: 'desperate' },
+                    { value: 'lonely', zh: '孤独', en: 'lonely' }
                 ],
                 style: [
                     { group: '🎬 电影风格', value: 'cinematic', zh: '电影质感', en: 'cinematic' },
-                    { group: '🎬 电影风格', value: 'hollywood', zh: '好莱坞大片质感', en: 'Hollywood blockbuster' },
-                    { group: '🎬 电影风格', value: 'noir', zh: '黑色电影，高对比', en: 'film noir, high contrast' },
+                    { group: '🎬 电影风格', value: 'hollywood', zh: '好莱坞大片', en: 'Hollywood blockbuster' },
+                    { group: '🎬 电影风格', value: 'noir', zh: '黑色电影', en: 'film noir' },
                     { group: '🎬 电影风格', value: 'vintage', zh: '复古胶片', en: 'vintage film grain' },
-                    { group: '🎬 电影风格', value: 'documentary', zh: '纪录片真实感', en: 'documentary realism' },
-                    { group: '🎬 电影风格', value: 'sci-fi', zh: '科幻电影，未来感', en: 'sci-fi, futuristic' },
-                    { group: '📺 动漫风格', value: 'anime', zh: '日式动漫', en: 'anime style' },
-                    { group: '📺 动漫风格', value: 'ghibli', zh: '吉卜力风，手绘感', en: 'Ghibli style, hand-drawn' },
-                    { group: '📺 动漫风格', value: 'shonen', zh: '少年热血动漫', en: 'shonen anime, dynamic' },
-                    { group: '📺 动漫风格', value: 'chibi', zh: 'Q版可爱风格', en: 'chibi, cute' },
+                    { group: '🎬 电影风格', value: 'documentary', zh: '纪录片', en: 'documentary' },
+                    { group: '🎬 电影风格', value: 'sci-fi', zh: '科幻电影', en: 'sci-fi' },
+                    { group: '🎬 电影风格', value: 'horror', zh: '恐怖电影', en: 'horror' },
+                    { group: '🎬 电影风格', value: 'romance', zh: '浪漫电影', en: 'romance' },
+                    { group: '🎬 电影风格', value: 'action', zh: '动作电影', en: 'action movie' },
+                    { group: '🎬 电影风格', value: 'western', zh: '西部片', en: 'western' },
+                    { group: '🎬 电影风格', value: 'war', zh: '战争片', en: 'war film' },
+                    { group: '📺 动漫风格', value: 'anime', zh: '日式动漫', en: 'anime' },
+                    { group: '📺 动漫风格', value: 'ghibli', zh: '吉卜力风', en: 'Ghibli' },
+                    { group: '📺 动漫风格', value: 'shonen', zh: '少年热血', en: 'shonen' },
+                    { group: '📺 动漫风格', value: 'chibi', zh: 'Q版可爱', en: 'chibi' },
                     { group: '📺 动漫风格', value: 'cyberpunk', zh: '赛博朋克动漫', en: 'cyberpunk anime' },
-                    { group: '📺 动漫风格', value: 'mecha', zh: '机甲动漫', en: 'mecha anime' },
+                    { group: '📺 动漫风格', value: 'mecha', zh: '机甲动漫', en: 'mecha' },
+                    { group: '📺 动漫风格', value: 'magical girl', zh: '魔法少女', en: 'magical girl' },
+                    { group: '📺 动漫风格', value: 'slice of life', zh: '日常', en: 'slice of life' },
+                    { group: '📺 动漫风格', value: 'comedy', zh: '搞笑动漫', en: 'comedy anime' },
                     { group: '🖌️ 艺术风格', value: 'watercolor', zh: '水彩画', en: 'watercolor' },
                     { group: '🖌️ 艺术风格', value: 'oil', zh: '油画', en: 'oil painting' },
                     { group: '🖌️ 艺术风格', value: 'ink', zh: '水墨画', en: 'ink wash' },
                     { group: '🖌️ 艺术风格', value: 'pixel', zh: '像素风', en: 'pixel art' },
                     { group: '🖌️ 艺术风格', value: '3d', zh: '3D动画', en: '3D animation' },
-                    { group: '🖌️ 艺术风格', value: 'clay', zh: '黏土动画', en: 'clay animation' }
+                    { group: '🖌️ 艺术风格', value: 'clay', zh: '黏土动画', en: 'clay animation' },
+                    { group: '🖌️ 艺术风格', value: 'sketch', zh: '素描', en: 'sketch' },
+                    { group: '🖌️ 艺术风格', value: 'pop art', zh: '波普艺术', en: 'pop art' }
                 ],
                 effect: [
-                    { value: 'particle', zh: '粒子特效，光点飘散', en: 'particle effects' },
-                    { value: 'glow', zh: '发光特效，光晕', en: 'glow effect' },
-                    { value: 'fire', zh: '火焰特效', en: 'fire effects' },
-                    { value: 'electric', zh: '电流/雷电', en: 'electricity, lightning' },
-                    { value: 'smoke', zh: '烟雾/雾气', en: 'smoke, mist' },
+                    { value: 'particle', zh: '粒子特效', en: 'particle effects' },
+                    { value: 'glow', zh: '发光特效', en: 'glow effect' },
+                    { value: 'fire', zh: '火焰特效', en: 'fire' },
+                    { value: 'electric', zh: '电流/雷电', en: 'electricity' },
+                    { value: 'smoke', zh: '烟雾/雾气', en: 'smoke' },
                     { value: 'water', zh: '水花/波浪', en: 'water splash' },
-                    { value: 'magic', zh: '魔法光效', en: 'magic light' },
-                    { value: 'glitch', zh: '故障艺术', en: 'glitch art' },
+                    { value: 'magic', zh: '魔法光效', en: 'magic' },
+                    { value: 'glitch', zh: '故障艺术', en: 'glitch' },
                     { value: 'lens flare', zh: '镜头光晕', en: 'lens flare' },
-                    { value: 'bloom', zh: '泛光效果', en: 'bloom' }
+                    { value: 'bloom', zh: '泛光', en: 'bloom' },
+                    { value: 'sparkle', zh: '闪烁星光', en: 'sparkle' },
+                    { value: 'explosion', zh: '爆炸', en: 'explosion' },
+                    { value: 'blood', zh: '血迹', en: 'blood' },
+                    { value: 'rainbow', zh: '彩虹', en: 'rainbow' },
+                    { value: 'shadow', zh: '阴影', en: 'shadow' },
+                    { value: 'light ray', zh: '光线', en: 'light rays' }
                 ],
                 physics: [
                     { value: 'slow motion', zh: '慢动作', en: 'slow motion' },
                     { value: 'timelapse', zh: '延时摄影', en: 'timelapse' },
-                    { value: 'gravity', zh: '真实重力', en: 'realistic gravity' },
+                    { value: 'gravity', zh: '真实重力', en: 'gravity' },
                     { value: 'zero gravity', zh: '零重力', en: 'zero gravity' },
                     { value: 'weightless', zh: '失重', en: 'weightless' },
-                    { value: 'inertia', zh: '惯性真实感', en: 'realistic inertia' },
+                    { value: 'inertia', zh: '惯性', en: 'inertia' },
                     { value: 'cloth sim', zh: '布料物理', en: 'cloth physics' },
-                    { value: 'hair sim', zh: '毛发物理', en: 'hair physics' }
+                    { value: 'hair sim', zh: '毛发物理', en: 'hair physics' },
+                    { value: 'ragdoll', zh: '布娃娃物理', en: 'ragdoll' },
+                    { value: 'fluid', zh: '流体模拟', en: 'fluid simulation' }
                 ],
                 camera: [
-                    { value: 'push in', zh: '推近，聚焦脸部', en: 'push in, focus on face' },
-                    { value: 'pull out', zh: '后拉，展现全景', en: 'pull out, reveal full scene' },
-                    { value: 'orbit', zh: '环绕360度', en: '360° orbit' },
-                    { value: 'follow', zh: '跟随移动', en: 'follow the subject' },
-                    { value: 'low angle', zh: '低角度仰拍', en: 'low-angle shot' },
-                    { value: 'high angle', zh: '高角度俯拍', en: 'high-angle shot' },
-                    { value: 'first person', zh: '第一人称视角', en: 'first-person view' },
-                    { value: 'drone', zh: '无人机航拍', en: 'drone aerial view' },
-                    { value: 'handheld', zh: '手持轻微晃动', en: 'handheld slight shake' },
-                    { value: 'steadicam', zh: '斯坦尼康稳定跟拍', en: 'Steadicam smooth follow' }
+                    { value: 'push in', zh: '推近', en: 'push in' },
+                    { value: 'pull out', zh: '拉远', en: 'pull out' },
+                    { value: 'orbit', zh: '环绕', en: 'orbit' },
+                    { value: 'follow', zh: '跟随', en: 'follow' },
+                    { value: 'low angle', zh: '低角度', en: 'low angle' },
+                    { value: 'high angle', zh: '高角度', en: 'high angle' },
+                    { value: 'first person', zh: '第一人称', en: 'first person' },
+                    { value: 'drone', zh: '航拍', en: 'drone' },
+                    { value: 'handheld', zh: '手持', en: 'handheld' },
+                    { value: 'steadicam', zh: '斯坦尼康', en: 'steadicam' },
+                    { value: 'crane', zh: '摇臂', en: 'crane shot' },
+                    { value: 'dolly', zh: '轨道', en: 'dolly' },
+                    { value: 'pan', zh: '横摇', en: 'pan' },
+                    { value: 'tilt', zh: '纵摇', en: 'tilt' },
+                    { value: 'zoom', zh: '变焦', en: 'zoom' },
+                    { value: 'rack focus', zh: '焦点切换', en: 'rack focus' }
                 ],
                 lighting: [
-                    { value: 'golden hour', zh: '黄金时刻，夕阳暖光', en: 'golden hour, warm sunset' },
-                    { value: 'blue hour', zh: '蓝色时刻，冷色调', en: 'blue hour, cold tones' },
-                    { value: 'neon', zh: '霓虹灯光', en: 'neon lights' },
-                    { value: 'high contrast', zh: '高对比，强光影', en: 'high contrast, strong shadows' },
-                    { value: 'soft', zh: '柔和光，浅景深', en: 'soft light, shallow depth' },
-                    { value: 'volumetric', zh: '体积光，丁达尔效应', en: 'volumetric lighting' },
-                    { value: 'backlight', zh: '逆光，剪影', en: 'backlight, silhouette' },
-                    { value: 'studio', zh: '摄影棚布光', en: 'studio lighting' },
-                    { value: 'moody', zh: '忧郁暗调', en: 'moody, dark tones' }
+                    { value: 'golden hour', zh: '黄金时刻', en: 'golden hour' },
+                    { value: 'blue hour', zh: '蓝色时刻', en: 'blue hour' },
+                    { value: 'neon', zh: '霓虹', en: 'neon' },
+                    { value: 'high contrast', zh: '高对比', en: 'high contrast' },
+                    { value: 'soft', zh: '柔和光', en: 'soft light' },
+                    { value: 'volumetric', zh: '体积光', en: 'volumetric' },
+                    { value: 'backlight', zh: '逆光', en: 'backlight' },
+                    { value: 'studio', zh: '摄影棚光', en: 'studio lighting' },
+                    { value: 'moody', zh: '忧郁暗调', en: 'moody' },
+                    { value: 'sunny', zh: '晴朗', en: 'sunny' },
+                    { value: 'cloudy', zh: '阴天', en: 'cloudy' },
+                    { value: 'night', zh: '夜晚', en: 'night' },
+                    { value: 'candlelight', zh: '烛光', en: 'candlelight' },
+                    { value: 'firelight', zh: '火光', en: 'firelight' },
+                    { value: 'fluorescent', zh: '荧光', en: 'fluorescent' }
                 ],
                 interaction: [
-                    { value: 'touch', zh: '伸手触碰樱花树', en: 'reach out to touch cherry blossoms' },
-                    { value: 'rain', zh: '雨水顺着脸颊流下', en: 'rain streaming down face' },
-                    { value: 'leaves', zh: '脚踩落叶沙沙作响', en: 'footsteps on fallen leaves' },
-                    { value: 'wind', zh: '风吹动发梢', en: 'wind blowing hair' },
-                    { value: 'ruins', zh: '站在废墟上', en: 'standing on ruins' },
-                    { value: 'wall', zh: '倚靠在墙边', en: 'leaning against the wall' },
-                    { value: 'water', zh: '水面倒影', en: 'reflection on water' },
-                    { value: 'fog', zh: '雾气缭绕', en: 'surrounded by fog' }
+                    { value: 'touch', zh: '触碰樱花', en: 'touch cherry blossoms' },
+                    { value: 'rain', zh: '雨水流下', en: 'rain streaming down' },
+                    { value: 'leaves', zh: '踩落叶', en: 'footsteps on leaves' },
+                    { value: 'wind', zh: '风吹发梢', en: 'wind blowing hair' },
+                    { value: 'ruins', zh: '站在废墟', en: 'standing on ruins' },
+                    { value: 'wall', zh: '倚靠墙', en: 'leaning against wall' },
+                    { value: 'water', zh: '水面倒影', en: 'water reflection' },
+                    { value: 'fog', zh: '雾气缭绕', en: 'surrounded by fog' },
+                    { value: 'snow', zh: '雪花飘落', en: 'snow falling' },
+                    { value: 'sand', zh: '脚印在沙中', en: 'footprints in sand' },
+                    { value: 'grass', zh: '草地', en: 'grass' },
+                    { value: 'flower', zh: '摘花', en: 'picking flowers' }
                 ],
                 position: [
                     { value: 'close-up', zh: '特写', en: 'close-up' },
@@ -424,130 +598,53 @@
                     { value: 'wide', zh: '远景', en: 'wide shot' },
                     { value: 'two-shot', zh: '双人镜头', en: 'two-shot' },
                     { value: 'over-shoulder', zh: '过肩镜头', en: 'over-the-shoulder' },
-                    { value: 'low-angle', zh: '低角度仰拍', en: 'low-angle shot' },
-                    { value: 'high-angle', zh: '高角度俯拍', en: 'high-angle shot' },
+                    { value: 'low-angle', zh: '低角度仰拍', en: 'low-angle' },
+                    { value: 'high-angle', zh: '高角度俯拍', en: 'high-angle' },
                     { value: 'dutch', zh: '倾斜构图', en: 'dutch angle' },
-                    { value: 'symmetrical', zh: '对称构图', en: 'symmetrical composition' },
-                    { value: 'rule-of-thirds', zh: '三分法构图', en: 'rule of thirds' }
+                    { value: 'symmetrical', zh: '对称构图', en: 'symmetrical' },
+                    { value: 'rule-of-thirds', zh: '三分法', en: 'rule of thirds' },
+                    { value: 'extreme close-up', zh: '极特写', en: 'extreme close-up' },
+                    { value: 'medium close-up', zh: '中近景', en: 'medium close-up' },
+                    { value: 'cowboy', zh: '牛仔镜头', en: 'cowboy shot' },
+                    { value: 'bird\'s eye', zh: '鸟瞰', en: 'bird\'s eye view' },
+                    { value: 'worm\'s eye', zh: '虫眼视角', en: 'worm\'s eye view' }
                 ],
                 negative: [
-                    { value: 'blurry', zh: '模糊不清', en: 'blurry' },
+                    { value: 'blurry', zh: '模糊', en: 'blurry' },
                     { value: 'distorted face', zh: '面部扭曲', en: 'distorted face' },
-                    { value: 'extra limbs', zh: '多指畸形/多余肢体', en: 'extra fingers, extra limbs' },
+                    { value: 'extra limbs', zh: '多余肢体', en: 'extra limbs' },
                     { value: 'flickering', zh: '画面闪烁', en: 'flickering' },
                     { value: 'low quality', zh: '低质量', en: 'low quality' },
                     { value: 'watermark', zh: '水印', en: 'watermark' },
-                    { value: 'morphing', zh: '物体变形', en: 'morphing' },
-                    { value: 'noise', zh: '噪点过多', en: 'noisy, grainy' }
+                    { value: 'morphing', zh: '变形', en: 'morphing' },
+                    { value: 'noise', zh: '噪点', en: 'noise' },
+                    { value: 'bad anatomy', zh: '错误解剖', en: 'bad anatomy' },
+                    { value: 'ugly', zh: '丑陋', en: 'ugly' },
+                    { value: 'duplicate', zh: '重复', en: 'duplicate' },
+                    { value: 'mutated', zh: '突变', en: 'mutated' }
                 ]
             };
 
-            // 模板数据（完整）
-            const templates = {
-                ancient_fight: {
-                    subject: { zh: '两个古装侠客在竹林中对峙', en: 'two ancient warriors confronting in a bamboo forest' },
-                    action: ['fight', 'confront'],
-                    emotion: 'determined',
-                    style: 'cinematic',
-                    effect: 'particle',
-                    physics: 'slow motion',
-                    camera: 'orbit',
-                    lighting: 'volumetric',
-                    interaction: 'leaves',
-                    position: 'two-shot',
-                    negative: ['blurry', 'distorted face']
-                },
-                urban_love: {
-                    subject: { zh: '一对恋人在雨中背对背站立', en: 'a couple standing back to back in the rain' },
-                    action: ['gaze', 'hand in hand'],
-                    emotion: 'sad furrowed',
-                    style: 'cinematic',
-                    effect: '',
-                    physics: '',
-                    camera: 'push in',
-                    lighting: 'blue hour',
-                    interaction: 'rain',
-                    position: 'medium',
-                    negative: ['extra limbs', 'flickering']
-                },
-                scifi_awakening: {
-                    subject: { zh: '一个机械姬在废墟上觉醒', en: 'a cyborg awakening on ruins' },
-                    action: ['transform', 'levitate'],
-                    emotion: 'determined',
-                    style: 'sci-fi',
-                    effect: 'glow',
-                    physics: 'zero gravity',
-                    camera: 'pull out',
-                    lighting: 'neon',
-                    interaction: 'ruins',
-                    position: 'wide',
-                    negative: ['blurry', 'morphing']
-                },
-                fantasy_magic: {
-                    subject: { zh: '一个魔法师在古堡前施法', en: 'a wizard casting spell' },
-                    action: ['wave'],
-                    emotion: 'determined',
-                    style: 'anime',
-                    effect: 'magic',
-                    physics: 'gravity',
-                    camera: 'low angle',
-                    lighting: 'volumetric',
-                    interaction: 'fog',
-                    position: 'low-angle',
-                    negative: ['distorted face']
-                },
-                horror_escape: {
-                    subject: { zh: '一个女孩在废弃医院奔跑', en: 'a girl running in an abandoned hospital' },
-                    action: ['run'],
-                    emotion: 'fear',
-                    style: 'noir',
-                    effect: 'smoke',
-                    physics: 'handheld',
-                    camera: 'handheld',
-                    lighting: 'moody',
-                    interaction: 'fog',
-                    position: 'dutch',
-                    negative: ['flickering']
-                },
-                comedy_slapstick: {
-                    subject: { zh: '一个滑稽的小丑摔倒', en: 'a clown falling comically' },
-                    action: ['jump'],
-                    emotion: 'joyful',
-                    style: 'chibi',
-                    effect: 'particle',
-                    physics: 'inertia',
-                    camera: 'follow',
-                    lighting: 'soft',
-                    interaction: '',
-                    position: 'medium',
-                    negative: ['distorted face']
-                },
-                historical_epic: {
-                    subject: { zh: '千军万马在草原上冲锋', en: 'thousands of cavalry charging' },
-                    action: ['run'],
-                    emotion: 'determined',
-                    style: 'cinematic',
-                    effect: 'smoke',
-                    physics: 'gravity',
-                    camera: 'drone',
-                    lighting: 'golden hour',
-                    interaction: '',
-                    position: 'wide',
-                    negative: ['blurry']
-                },
-                mecha_battle: {
-                    subject: { zh: '两个巨大机甲在城市中激战', en: 'two giant mechas fighting' },
-                    action: ['fight', 'explode'],
-                    emotion: 'angry',
-                    style: 'mecha',
-                    effect: 'fire',
-                    physics: 'gravity',
-                    camera: 'low angle',
-                    lighting: 'high contrast',
-                    interaction: 'ruins',
-                    position: 'two-shot',
-                    negative: ['distorted face', 'morphing']
-                }
+            // 多镜头模板数据（略，同前，但可扩展）
+            const multiShotTemplates = {
+                ancient_fight: [
+                    { subject: '两个古装侠客在竹林中对峙', action: ['confront'], emotion: 'determined', style: 'cinematic', effect: '', physics: '', camera: 'medium', lighting: 'volumetric', interaction: 'leaves', position: 'two-shot', negative: ['blurry'] },
+                    { subject: '黑衣侠客拔剑冲向白衣侠客', action: ['fight', 'run'], emotion: 'angry', style: 'cinematic', effect: 'particle', physics: 'slow motion', camera: 'follow', lighting: 'volumetric', interaction: 'leaves', position: 'over-shoulder', negative: ['blurry'] },
+                    { subject: '双剑相交，火花四溅', action: ['fight'], emotion: 'determined', style: 'cinematic', effect: 'fire', physics: 'slow motion', camera: 'close-up', lighting: 'high contrast', interaction: '', position: 'close-up', negative: ['distorted face'] }
+                ],
+                urban_love: [
+                    { subject: '一对恋人在雨中背对背站立', action: ['gaze'], emotion: 'sad furrowed', style: 'cinematic', effect: '', physics: '', camera: 'wide', lighting: 'blue hour', interaction: 'rain', position: 'medium', negative: ['extra limbs'] },
+                    { subject: '女孩缓缓转身，泪水混着雨水流下', action: ['slowly turn'], emotion: 'cry', style: 'cinematic', effect: '', physics: '', camera: 'push in', lighting: 'blue hour', interaction: 'rain', position: 'close-up', negative: ['flickering'] },
+                    { subject: '男孩伸手想挽留，却只触碰到空气', action: ['wave'], emotion: 'sad furrowed', style: 'cinematic', effect: '', physics: '', camera: 'over-shoulder', lighting: 'moody', interaction: 'rain', position: 'over-shoulder', negative: ['blurry'] }
+                ],
+                scifi_awakening: [
+                    { subject: '机械姬躺在废墟中，眼睛突然发光', action: ['transform'], emotion: 'determined', style: 'sci-fi', effect: 'glow', physics: '', camera: 'close-up', lighting: 'neon', interaction: 'ruins', position: 'close-up', negative: ['morphing'] },
+                    { subject: '她缓缓悬浮起来，周身粒子环绕', action: ['levitate'], emotion: 'determined', style: 'sci-fi', effect: 'particle', physics: 'zero gravity', camera: 'pull out', lighting: 'neon', interaction: 'ruins', position: 'full', negative: ['blurry'] }
+                ],
+                fantasy_magic: [
+                    { subject: '魔法师高举法杖，天空乌云涌动', action: ['cast spell'], emotion: 'determined', style: 'anime', effect: 'magic', physics: '', camera: 'low angle', lighting: 'volumetric', interaction: 'fog', position: 'low-angle', negative: ['distorted face'] },
+                    { subject: '法杖顶端爆发出耀眼光芒', action: ['explode'], emotion: 'determined', style: 'anime', effect: 'bloom', physics: '', camera: 'close-up', lighting: 'glow', interaction: '', position: 'close-up', negative: ['flickering'] }
+                ]
             };
 
             // ---------- 辅助函数 ----------
@@ -557,34 +654,94 @@
                 setTimeout(() => toast.classList.remove('show'), 2000);
             }
 
-            // 创建镜头卡片（完整版）
-            function createShotCard(shotId, shotData = {}) {
+            // 防抖更新预览
+            function debouncedUpdatePreview() {
+                if (updateTimeout) clearTimeout(updateTimeout);
+                updateTimeout = setTimeout(() => {
+                    updatePreview();
+                    updateTimeout = null;
+                }, 200);
+            }
+
+            // 更新所有下拉的语言（动态切换，不刷新）
+            function updateAllLang() {
+                document.querySelectorAll('.shot-card').forEach(card => {
+                    // 更新复选框文本
+                    card.querySelectorAll('.shot-action-group label').forEach(label => {
+                        const cb = label.querySelector('input');
+                        const val = cb.value;
+                        const item = optionData.action.find(i => i.value === val);
+                        if (item) label.childNodes[1].nodeValue = currentLang === 'zh' ? item.zh : item.en;
+                    });
+                    card.querySelectorAll('.shot-negative-group label').forEach(label => {
+                        const cb = label.querySelector('input');
+                        const val = cb.value;
+                        const item = optionData.negative.find(i => i.value === val);
+                        if (item) label.childNodes[1].nodeValue = currentLang === 'zh' ? item.zh : item.en;
+                    });
+
+                    // 更新select选项
+                    ['emotion', 'style', 'effect', 'physics', 'camera', 'lighting', 'interaction', 'position'].forEach(type => {
+                        const select = card.querySelector(`.shot-${type}`);
+                        if (select) {
+                            Array.from(select.options).forEach(opt => {
+                                if (opt.value) {
+                                    const zh = opt.getAttribute('data-zh');
+                                    const en = opt.getAttribute('data-en');
+                                    opt.textContent = currentLang === 'zh' ? zh : en;
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+
+            // 创建镜头卡片（完整版，带权重、折叠、tooltip）
+            function createShotCard(shotId, shotData = {}, isCollapsed = false) {
                 const card = document.createElement('div');
-                card.className = 'shot-card';
+                card.className = `shot-card collapsible ${isCollapsed ? '' : 'expanded'}`;
                 card.dataset.shotId = shotId;
 
                 // 头部
                 const header = document.createElement('div');
                 header.className = 'shot-header';
                 header.innerHTML = `
-                    <span class="shot-title">🎬 镜头 ${shotId}</span>
+                    <div class="shot-title">
+                        <span>🎬 镜头 ${shotId}</span>
+                        <div class="move-buttons">
+                            <button class="move-up-btn" title="上移">⬆️</button>
+                            <button class="move-down-btn" title="下移">⬇️</button>
+                        </div>
+                    </div>
                     <div class="shot-actions">
                         <button class="copy-shot-btn">📋 复制</button>
                         <button class="delete-shot-btn">🗑️ 删除</button>
+                        <button class="toggle-collapse-btn">${isCollapsed ? '🔽 展开' : '🔼 折叠'}</button>
                     </div>
                 `;
                 card.appendChild(header);
 
-                // 主体
+                // 主体描述（始终可见）
                 const subjectGroup = document.createElement('div');
-                subjectGroup.className = 'option-group';
-                subjectGroup.innerHTML = `<label>🧑 主体描述</label><textarea class="shot-subject" rows="2">${shotData.subject || ''}</textarea>`;
+                subjectGroup.className = 'option-group always-visible';
+                subjectGroup.innerHTML = `
+                    <label>🧑 主体描述 <span class="badge tooltip">?<span class="tooltiptext">描述画面中的主要人物或物体，可写多人</span></span></label>
+                    <textarea class="shot-subject" rows="2">${shotData.subject || ''}</textarea>
+                `;
                 card.appendChild(subjectGroup);
 
-                // 动作
+                // 动作（带权重）
                 const actionGroup = document.createElement('div');
                 actionGroup.className = 'option-group';
-                actionGroup.innerHTML = `<label>🏃 动作</label><div class="checkbox-group shot-action-group"></div><div class="custom-input"><input type="text" class="shot-action-custom" value="${shotData.actionCustom || ''}" placeholder="自定义动作"></div>`;
+                actionGroup.innerHTML = `
+                    <label>🏃 动作 <span class="badge tooltip">?<span class="tooltiptext">可多选，拖动滑块调整权重</span></span></label>
+                    <div class="checkbox-group shot-action-group"></div>
+                    <div class="weight-control">
+                        <input type="range" class="shot-action-weight" min="0.5" max="2" step="0.1" value="${shotData.actionWeight || 1}">
+                        <span class="weight-value">${shotData.actionWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-action-custom" value="${shotData.actionCustom || ''}" placeholder="自定义动作"></div>
+                `;
                 card.appendChild(actionGroup);
                 const actionContainer = actionGroup.querySelector('.checkbox-group');
                 optionData.action.forEach(item => {
@@ -598,11 +755,27 @@
                     label.appendChild(document.createTextNode(currentLang === 'zh' ? item.zh : item.en));
                     actionContainer.appendChild(label);
                 });
+                // 权重滑块联动
+                const weightSlider = actionGroup.querySelector('.shot-action-weight');
+                const weightSpan = actionGroup.querySelector('.weight-value');
+                weightSlider.addEventListener('input', () => {
+                    weightSpan.textContent = weightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
+                });
 
-                // 情绪
+                // 情绪（带权重）
                 const emotionGroup = document.createElement('div');
                 emotionGroup.className = 'option-group';
-                emotionGroup.innerHTML = `<label>😊 情绪</label><select class="shot-emotion"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-emotion-custom" value="${shotData.emotionCustom || ''}" placeholder="自定义情绪"></div>`;
+                emotionGroup.innerHTML = `
+                    <label>😊 情绪 <span class="badge tooltip">?<span class="tooltiptext">选择情绪，可自定义</span></span></label>
+                    <select class="shot-emotion"><option value="">-- 请选择 --</option></select>
+                    <div class="weight-control">
+                        <input type="range" class="shot-emotion-weight" min="0.5" max="2" step="0.1" value="${shotData.emotionWeight || 1}">
+                        <span class="weight-value">${shotData.emotionWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-emotion-custom" value="${shotData.emotionCustom || ''}" placeholder="自定义情绪"></div>
+                `;
                 card.appendChild(emotionGroup);
                 const emotionSelect = emotionGroup.querySelector('.shot-emotion');
                 optionData.emotion.forEach(item => {
@@ -614,11 +787,26 @@
                     if (item.value === shotData.emotion) opt.selected = true;
                     emotionSelect.appendChild(opt);
                 });
+                const emotionWeightSlider = emotionGroup.querySelector('.shot-emotion-weight');
+                const emotionWeightSpan = emotionGroup.querySelector('.weight-value');
+                emotionWeightSlider.addEventListener('input', () => {
+                    emotionWeightSpan.textContent = emotionWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
+                });
 
-                // 风格
+                // 风格（带权重）
                 const styleGroup = document.createElement('div');
                 styleGroup.className = 'option-group';
-                styleGroup.innerHTML = `<label>🎨 风格</label><select class="shot-style"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-style-custom" value="${shotData.styleCustom || ''}" placeholder="自定义风格"></div>`;
+                styleGroup.innerHTML = `
+                    <label>🎨 风格 <span class="badge tooltip">?<span class="tooltiptext">选择电影/动漫/艺术风格</span></span></label>
+                    <select class="shot-style"><option value="">-- 请选择 --</option></select>
+                    <div class="weight-control">
+                        <input type="range" class="shot-style-weight" min="0.5" max="2" step="0.1" value="${shotData.styleWeight || 1}">
+                        <span class="weight-value">${shotData.styleWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-style-custom" value="${shotData.styleCustom || ''}" placeholder="自定义风格"></div>
+                `;
                 card.appendChild(styleGroup);
                 const styleSelect = styleGroup.querySelector('.shot-style');
                 optionData.style.forEach(item => {
@@ -630,43 +818,26 @@
                     if (item.value === shotData.style) opt.selected = true;
                     styleSelect.appendChild(opt);
                 });
-
-                // 特效
-                const effectGroup = document.createElement('div');
-                effectGroup.className = 'option-group';
-                effectGroup.innerHTML = `<label>✨ 特效</label><select class="shot-effect"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-effect-custom" value="${shotData.effectCustom || ''}" placeholder="自定义特效"></div>`;
-                card.appendChild(effectGroup);
-                const effectSelect = effectGroup.querySelector('.shot-effect');
-                optionData.effect.forEach(item => {
-                    const opt = document.createElement('option');
-                    opt.value = item.value;
-                    opt.setAttribute('data-zh', item.zh);
-                    opt.setAttribute('data-en', item.en);
-                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
-                    if (item.value === shotData.effect) opt.selected = true;
-                    effectSelect.appendChild(opt);
+                const styleWeightSlider = styleGroup.querySelector('.shot-style-weight');
+                const styleWeightSpan = styleGroup.querySelector('.weight-value');
+                styleWeightSlider.addEventListener('input', () => {
+                    styleWeightSpan.textContent = styleWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
                 });
 
-                // 物理
-                const physicsGroup = document.createElement('div');
-                physicsGroup.className = 'option-group';
-                physicsGroup.innerHTML = `<label>⚡ 物理</label><select class="shot-physics"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-physics-custom" value="${shotData.physicsCustom || ''}" placeholder="自定义物理"></div>`;
-                card.appendChild(physicsGroup);
-                const physicsSelect = physicsGroup.querySelector('.shot-physics');
-                optionData.physics.forEach(item => {
-                    const opt = document.createElement('option');
-                    opt.value = item.value;
-                    opt.setAttribute('data-zh', item.zh);
-                    opt.setAttribute('data-en', item.en);
-                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
-                    if (item.value === shotData.physics) opt.selected = true;
-                    physicsSelect.appendChild(opt);
-                });
-
-                // 运镜
+                // 运镜（带权重）
                 const cameraGroup = document.createElement('div');
                 cameraGroup.className = 'option-group';
-                cameraGroup.innerHTML = `<label>🎥 运镜</label><select class="shot-camera"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-camera-custom" value="${shotData.cameraCustom || ''}" placeholder="自定义运镜"></div>`;
+                cameraGroup.innerHTML = `
+                    <label>🎥 运镜 <span class="badge tooltip">?<span class="tooltiptext">镜头运动方式</span></span></label>
+                    <select class="shot-camera"><option value="">-- 请选择 --</option></select>
+                    <div class="weight-control">
+                        <input type="range" class="shot-camera-weight" min="0.5" max="2" step="0.1" value="${shotData.cameraWeight || 1}">
+                        <span class="weight-value">${shotData.cameraWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-camera-custom" value="${shotData.cameraCustom || ''}" placeholder="自定义运镜"></div>
+                `;
                 card.appendChild(cameraGroup);
                 const cameraSelect = cameraGroup.querySelector('.shot-camera');
                 optionData.camera.forEach(item => {
@@ -678,43 +849,26 @@
                     if (item.value === shotData.camera) opt.selected = true;
                     cameraSelect.appendChild(opt);
                 });
-
-                // 光影
-                const lightingGroup = document.createElement('div');
-                lightingGroup.className = 'option-group';
-                lightingGroup.innerHTML = `<label>☀️ 光影</label><select class="shot-lighting"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-lighting-custom" value="${shotData.lightingCustom || ''}" placeholder="自定义光影"></div>`;
-                card.appendChild(lightingGroup);
-                const lightingSelect = lightingGroup.querySelector('.shot-lighting');
-                optionData.lighting.forEach(item => {
-                    const opt = document.createElement('option');
-                    opt.value = item.value;
-                    opt.setAttribute('data-zh', item.zh);
-                    opt.setAttribute('data-en', item.en);
-                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
-                    if (item.value === shotData.lighting) opt.selected = true;
-                    lightingSelect.appendChild(opt);
+                const cameraWeightSlider = cameraGroup.querySelector('.shot-camera-weight');
+                const cameraWeightSpan = cameraGroup.querySelector('.weight-value');
+                cameraWeightSlider.addEventListener('input', () => {
+                    cameraWeightSpan.textContent = cameraWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
                 });
 
-                // 互动
-                const interactionGroup = document.createElement('div');
-                interactionGroup.className = 'option-group';
-                interactionGroup.innerHTML = `<label>🌳 互动</label><select class="shot-interaction"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-interaction-custom" value="${shotData.interactionCustom || ''}" placeholder="自定义互动"></div>`;
-                card.appendChild(interactionGroup);
-                const interactionSelect = interactionGroup.querySelector('.shot-interaction');
-                optionData.interaction.forEach(item => {
-                    const opt = document.createElement('option');
-                    opt.value = item.value;
-                    opt.setAttribute('data-zh', item.zh);
-                    opt.setAttribute('data-en', item.en);
-                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
-                    if (item.value === shotData.interaction) opt.selected = true;
-                    interactionSelect.appendChild(opt);
-                });
-
-                // 站位
+                // 站位（带权重）
                 const positionGroup = document.createElement('div');
                 positionGroup.className = 'option-group';
-                positionGroup.innerHTML = `<label>📐 人物站位</label><select class="shot-position"><option value="">-- 请选择 --</option></select><div class="custom-input"><input type="text" class="shot-position-custom" value="${shotData.positionCustom || ''}" placeholder="自定义站位"></div>`;
+                positionGroup.innerHTML = `
+                    <label>📐 人物站位 <span class="badge tooltip">?<span class="tooltiptext">构图方式</span></span></label>
+                    <select class="shot-position"><option value="">-- 请选择 --</option></select>
+                    <div class="weight-control">
+                        <input type="range" class="shot-position-weight" min="0.5" max="2" step="0.1" value="${shotData.positionWeight || 1}">
+                        <span class="weight-value">${shotData.positionWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-position-custom" value="${shotData.positionCustom || ''}" placeholder="自定义站位"></div>
+                `;
                 card.appendChild(positionGroup);
                 const positionSelect = positionGroup.querySelector('.shot-position');
                 optionData.position.forEach(item => {
@@ -726,11 +880,150 @@
                     if (item.value === shotData.position) opt.selected = true;
                     positionSelect.appendChild(opt);
                 });
+                const positionWeightSlider = positionGroup.querySelector('.shot-position-weight');
+                const positionWeightSpan = positionGroup.querySelector('.weight-value');
+                positionWeightSlider.addEventListener('input', () => {
+                    positionWeightSpan.textContent = positionWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
+                });
 
-                // 负面词
+                // 光影（带权重）
+                const lightingGroup = document.createElement('div');
+                lightingGroup.className = 'option-group';
+                lightingGroup.innerHTML = `
+                    <label>☀️ 光影 <span class="badge tooltip">?<span class="tooltiptext">光线氛围</span></span></label>
+                    <select class="shot-lighting"><option value="">-- 请选择 --</option></select>
+                    <div class="weight-control">
+                        <input type="range" class="shot-lighting-weight" min="0.5" max="2" step="0.1" value="${shotData.lightingWeight || 1}">
+                        <span class="weight-value">${shotData.lightingWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-lighting-custom" value="${shotData.lightingCustom || ''}" placeholder="自定义光影"></div>
+                `;
+                card.appendChild(lightingGroup);
+                const lightingSelect = lightingGroup.querySelector('.shot-lighting');
+                optionData.lighting.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.lighting) opt.selected = true;
+                    lightingSelect.appendChild(opt);
+                });
+                const lightingWeightSlider = lightingGroup.querySelector('.shot-lighting-weight');
+                const lightingWeightSpan = lightingGroup.querySelector('.weight-value');
+                lightingWeightSlider.addEventListener('input', () => {
+                    lightingWeightSpan.textContent = lightingWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
+                });
+
+                // 特效（带权重）
+                const effectGroup = document.createElement('div');
+                effectGroup.className = 'option-group';
+                effectGroup.innerHTML = `
+                    <label>✨ 特效 <span class="badge tooltip">?<span class="tooltiptext">视觉特效</span></span></label>
+                    <select class="shot-effect"><option value="">-- 请选择 --</option></select>
+                    <div class="weight-control">
+                        <input type="range" class="shot-effect-weight" min="0.5" max="2" step="0.1" value="${shotData.effectWeight || 1}">
+                        <span class="weight-value">${shotData.effectWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-effect-custom" value="${shotData.effectCustom || ''}" placeholder="自定义特效"></div>
+                `;
+                card.appendChild(effectGroup);
+                const effectSelect = effectGroup.querySelector('.shot-effect');
+                optionData.effect.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.effect) opt.selected = true;
+                    effectSelect.appendChild(opt);
+                });
+                const effectWeightSlider = effectGroup.querySelector('.shot-effect-weight');
+                const effectWeightSpan = effectGroup.querySelector('.weight-value');
+                effectWeightSlider.addEventListener('input', () => {
+                    effectWeightSpan.textContent = effectWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
+                });
+
+                // 物理（带权重）
+                const physicsGroup = document.createElement('div');
+                physicsGroup.className = 'option-group';
+                physicsGroup.innerHTML = `
+                    <label>⚡ 物理 <span class="badge tooltip">?<span class="tooltiptext">运动物理效果</span></span></label>
+                    <select class="shot-physics"><option value="">-- 请选择 --</option></select>
+                    <div class="weight-control">
+                        <input type="range" class="shot-physics-weight" min="0.5" max="2" step="0.1" value="${shotData.physicsWeight || 1}">
+                        <span class="weight-value">${shotData.physicsWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-physics-custom" value="${shotData.physicsCustom || ''}" placeholder="自定义物理"></div>
+                `;
+                card.appendChild(physicsGroup);
+                const physicsSelect = physicsGroup.querySelector('.shot-physics');
+                optionData.physics.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.physics) opt.selected = true;
+                    physicsSelect.appendChild(opt);
+                });
+                const physicsWeightSlider = physicsGroup.querySelector('.shot-physics-weight');
+                const physicsWeightSpan = physicsGroup.querySelector('.weight-value');
+                physicsWeightSlider.addEventListener('input', () => {
+                    physicsWeightSpan.textContent = physicsWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
+                });
+
+                // 互动（带权重）
+                const interactionGroup = document.createElement('div');
+                interactionGroup.className = 'option-group';
+                interactionGroup.innerHTML = `
+                    <label>🌳 互动 <span class="badge tooltip">?<span class="tooltiptext">与背景的交互</span></span></label>
+                    <select class="shot-interaction"><option value="">-- 请选择 --</option></select>
+                    <div class="weight-control">
+                        <input type="range" class="shot-interaction-weight" min="0.5" max="2" step="0.1" value="${shotData.interactionWeight || 1}">
+                        <span class="weight-value">${shotData.interactionWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-interaction-custom" value="${shotData.interactionCustom || ''}" placeholder="自定义互动"></div>
+                `;
+                card.appendChild(interactionGroup);
+                const interactionSelect = interactionGroup.querySelector('.shot-interaction');
+                optionData.interaction.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.value;
+                    opt.setAttribute('data-zh', item.zh);
+                    opt.setAttribute('data-en', item.en);
+                    opt.textContent = currentLang === 'zh' ? item.zh : item.en;
+                    if (item.value === shotData.interaction) opt.selected = true;
+                    interactionSelect.appendChild(opt);
+                });
+                const interactionWeightSlider = interactionGroup.querySelector('.shot-interaction-weight');
+                const interactionWeightSpan = interactionGroup.querySelector('.weight-value');
+                interactionWeightSlider.addEventListener('input', () => {
+                    interactionWeightSpan.textContent = interactionWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
+                });
+
+                // 负面词（带权重）
                 const negativeGroup = document.createElement('div');
                 negativeGroup.className = 'option-group';
-                negativeGroup.innerHTML = `<label>⚠️ 负面词</label><div class="checkbox-group shot-negative-group"></div><div class="custom-input"><input type="text" class="shot-negative-custom" value="${shotData.negativeCustom || ''}" placeholder="自定义负面词"></div>`;
+                negativeGroup.innerHTML = `
+                    <label>⚠️ 负面词 <span class="badge tooltip">?<span class="tooltiptext">要避免的内容，可多选</span></span></label>
+                    <div class="checkbox-group shot-negative-group"></div>
+                    <div class="weight-control">
+                        <input type="range" class="shot-negative-weight" min="0.5" max="2" step="0.1" value="${shotData.negativeWeight || 1}">
+                        <span class="weight-value">${shotData.negativeWeight || 1}</span>
+                    </div>
+                    <div class="custom-input"><input type="text" class="shot-negative-custom" value="${shotData.negativeCustom || ''}" placeholder="自定义负面词"></div>
+                `;
                 card.appendChild(negativeGroup);
                 const negativeContainer = negativeGroup.querySelector('.checkbox-group');
                 optionData.negative.forEach(item => {
@@ -744,38 +1037,55 @@
                     label.appendChild(document.createTextNode(currentLang === 'zh' ? item.zh : item.en));
                     negativeContainer.appendChild(label);
                 });
+                const negativeWeightSlider = negativeGroup.querySelector('.shot-negative-weight');
+                const negativeWeightSpan = negativeGroup.querySelector('.weight-value');
+                negativeWeightSlider.addEventListener('input', () => {
+                    negativeWeightSpan.textContent = negativeWeightSlider.value;
+                    debouncedUpdatePreview();
+                    saveToLocalStorage();
+                });
 
                 return card;
             }
 
-            // 收集镜头数据
+            // 收集镜头数据（带权重）
             function collectShotData(card) {
                 return {
                     subject: card.querySelector('.shot-subject').value,
                     action: Array.from(card.querySelectorAll('.shot-action-cb:checked')).map(cb => cb.value),
                     actionCustom: card.querySelector('.shot-action-custom').value,
+                    actionWeight: parseFloat(card.querySelector('.shot-action-weight').value),
                     emotion: card.querySelector('.shot-emotion').value,
                     emotionCustom: card.querySelector('.shot-emotion-custom').value,
+                    emotionWeight: parseFloat(card.querySelector('.shot-emotion-weight').value),
                     style: card.querySelector('.shot-style').value,
                     styleCustom: card.querySelector('.shot-style-custom').value,
-                    effect: card.querySelector('.shot-effect').value,
-                    effectCustom: card.querySelector('.shot-effect-custom').value,
-                    physics: card.querySelector('.shot-physics').value,
-                    physicsCustom: card.querySelector('.shot-physics-custom').value,
+                    styleWeight: parseFloat(card.querySelector('.shot-style-weight').value),
                     camera: card.querySelector('.shot-camera').value,
                     cameraCustom: card.querySelector('.shot-camera-custom').value,
-                    lighting: card.querySelector('.shot-lighting').value,
-                    lightingCustom: card.querySelector('.shot-lighting-custom').value,
-                    interaction: card.querySelector('.shot-interaction').value,
-                    interactionCustom: card.querySelector('.shot-interaction-custom').value,
+                    cameraWeight: parseFloat(card.querySelector('.shot-camera-weight').value),
                     position: card.querySelector('.shot-position').value,
                     positionCustom: card.querySelector('.shot-position-custom').value,
+                    positionWeight: parseFloat(card.querySelector('.shot-position-weight').value),
+                    lighting: card.querySelector('.shot-lighting').value,
+                    lightingCustom: card.querySelector('.shot-lighting-custom').value,
+                    lightingWeight: parseFloat(card.querySelector('.shot-lighting-weight').value),
+                    effect: card.querySelector('.shot-effect').value,
+                    effectCustom: card.querySelector('.shot-effect-custom').value,
+                    effectWeight: parseFloat(card.querySelector('.shot-effect-weight').value),
+                    physics: card.querySelector('.shot-physics').value,
+                    physicsCustom: card.querySelector('.shot-physics-custom').value,
+                    physicsWeight: parseFloat(card.querySelector('.shot-physics-weight').value),
+                    interaction: card.querySelector('.shot-interaction').value,
+                    interactionCustom: card.querySelector('.shot-interaction-custom').value,
+                    interactionWeight: parseFloat(card.querySelector('.shot-interaction-weight').value),
                     negative: Array.from(card.querySelectorAll('.shot-negative-cb:checked')).map(cb => cb.value),
-                    negativeCustom: card.querySelector('.shot-negative-custom').value
+                    negativeCustom: card.querySelector('.shot-negative-custom').value,
+                    negativeWeight: parseFloat(card.querySelector('.shot-negative-weight').value)
                 };
             }
 
-            // 生成单个镜头提示词
+            // 生成单个镜头提示词（带权重）
             function generateShotPrompt(shotData) {
                 const parts = [];
                 if (shotData.subject) parts.push(shotData.subject);
@@ -786,51 +1096,122 @@
                     return item ? (currentLang === 'zh' ? item.zh : item.en) : '';
                 }).filter(t => t);
                 if (shotData.actionCustom) actionTexts.push(shotData.actionCustom);
-                if (actionTexts.length) parts.push(actionTexts.join('，'));
+                if (actionTexts.length) {
+                    const joined = actionTexts.join('，');
+                    if (shotData.actionWeight && shotData.actionWeight !== 1) {
+                        parts.push(`(${joined}:${shotData.actionWeight})`);
+                    } else {
+                        parts.push(joined);
+                    }
+                }
 
                 // 情绪
                 const emotionItem = optionData.emotion.find(i => i.value === shotData.emotion);
-                if (emotionItem) parts.push(currentLang === 'zh' ? emotionItem.zh : emotionItem.en);
-                if (shotData.emotionCustom) parts.push(shotData.emotionCustom);
+                let emotionText = '';
+                if (emotionItem) emotionText = currentLang === 'zh' ? emotionItem.zh : emotionItem.en;
+                if (shotData.emotionCustom) emotionText = (emotionText ? emotionText + '，' : '') + shotData.emotionCustom;
+                if (emotionText) {
+                    if (shotData.emotionWeight && shotData.emotionWeight !== 1) {
+                        parts.push(`(${emotionText}:${shotData.emotionWeight})`);
+                    } else {
+                        parts.push(emotionText);
+                    }
+                }
 
                 // 互动
                 const interactionItem = optionData.interaction.find(i => i.value === shotData.interaction);
-                if (interactionItem) parts.push(currentLang === 'zh' ? interactionItem.zh : interactionItem.en);
-                if (shotData.interactionCustom) parts.push(shotData.interactionCustom);
+                let interactionText = '';
+                if (interactionItem) interactionText = currentLang === 'zh' ? interactionItem.zh : interactionItem.en;
+                if (shotData.interactionCustom) interactionText = (interactionText ? interactionText + '，' : '') + shotData.interactionCustom;
+                if (interactionText) {
+                    if (shotData.interactionWeight && shotData.interactionWeight !== 1) {
+                        parts.push(`(${interactionText}:${shotData.interactionWeight})`);
+                    } else {
+                        parts.push(interactionText);
+                    }
+                }
 
                 // 站位
                 const positionItem = optionData.position.find(i => i.value === shotData.position);
-                if (positionItem) parts.push(currentLang === 'zh' ? positionItem.zh : positionItem.en);
-                if (shotData.positionCustom) parts.push(shotData.positionCustom);
+                let positionText = '';
+                if (positionItem) positionText = currentLang === 'zh' ? positionItem.zh : positionItem.en;
+                if (shotData.positionCustom) positionText = (positionText ? positionText + '，' : '') + shotData.positionCustom;
+                if (positionText) {
+                    if (shotData.positionWeight && shotData.positionWeight !== 1) {
+                        parts.push(`(${positionText}:${shotData.positionWeight})`);
+                    } else {
+                        parts.push(positionText);
+                    }
+                }
 
                 // 运镜
                 const cameraItem = optionData.camera.find(i => i.value === shotData.camera);
-                if (cameraItem) parts.push(currentLang === 'zh' ? cameraItem.zh : cameraItem.en);
-                if (shotData.cameraCustom) parts.push(shotData.cameraCustom);
+                let cameraText = '';
+                if (cameraItem) cameraText = currentLang === 'zh' ? cameraItem.zh : cameraItem.en;
+                if (shotData.cameraCustom) cameraText = (cameraText ? cameraText + '，' : '') + shotData.cameraCustom;
+                if (cameraText) {
+                    if (shotData.cameraWeight && shotData.cameraWeight !== 1) {
+                        parts.push(`(${cameraText}:${shotData.cameraWeight})`);
+                    } else {
+                        parts.push(cameraText);
+                    }
+                }
 
                 // 光影
                 const lightingItem = optionData.lighting.find(i => i.value === shotData.lighting);
-                if (lightingItem) parts.push(currentLang === 'zh' ? lightingItem.zh : lightingItem.en);
-                if (shotData.lightingCustom) parts.push(shotData.lightingCustom);
+                let lightingText = '';
+                if (lightingItem) lightingText = currentLang === 'zh' ? lightingItem.zh : lightingItem.en;
+                if (shotData.lightingCustom) lightingText = (lightingText ? lightingText + '，' : '') + shotData.lightingCustom;
+                if (lightingText) {
+                    if (shotData.lightingWeight && shotData.lightingWeight !== 1) {
+                        parts.push(`(${lightingText}:${shotData.lightingWeight})`);
+                    } else {
+                        parts.push(lightingText);
+                    }
+                }
 
                 // 风格
                 const styleItem = optionData.style.find(i => i.value === shotData.style);
-                if (styleItem) parts.push(currentLang === 'zh' ? styleItem.zh : styleItem.en);
-                if (shotData.styleCustom) parts.push(shotData.styleCustom);
+                let styleText = '';
+                if (styleItem) styleText = currentLang === 'zh' ? styleItem.zh : styleItem.en;
+                if (shotData.styleCustom) styleText = (styleText ? styleText + '，' : '') + shotData.styleCustom;
+                if (styleText) {
+                    if (shotData.styleWeight && shotData.styleWeight !== 1) {
+                        parts.push(`(${styleText}:${shotData.styleWeight})`);
+                    } else {
+                        parts.push(styleText);
+                    }
+                }
 
                 // 特效
                 const effectItem = optionData.effect.find(i => i.value === shotData.effect);
-                if (effectItem) parts.push(currentLang === 'zh' ? effectItem.zh : effectItem.en);
-                if (shotData.effectCustom) parts.push(shotData.effectCustom);
+                let effectText = '';
+                if (effectItem) effectText = currentLang === 'zh' ? effectItem.zh : effectItem.en;
+                if (shotData.effectCustom) effectText = (effectText ? effectText + '，' : '') + shotData.effectCustom;
+                if (effectText) {
+                    if (shotData.effectWeight && shotData.effectWeight !== 1) {
+                        parts.push(`(${effectText}:${shotData.effectWeight})`);
+                    } else {
+                        parts.push(effectText);
+                    }
+                }
 
                 // 物理
                 const physicsItem = optionData.physics.find(i => i.value === shotData.physics);
-                if (physicsItem) parts.push(currentLang === 'zh' ? physicsItem.zh : physicsItem.en);
-                if (shotData.physicsCustom) parts.push(shotData.physicsCustom);
+                let physicsText = '';
+                if (physicsItem) physicsText = currentLang === 'zh' ? physicsItem.zh : physicsItem.en;
+                if (shotData.physicsCustom) physicsText = (physicsText ? physicsText + '，' : '') + shotData.physicsCustom;
+                if (physicsText) {
+                    if (shotData.physicsWeight && shotData.physicsWeight !== 1) {
+                        parts.push(`(${physicsText}:${shotData.physicsWeight})`);
+                    } else {
+                        parts.push(physicsText);
+                    }
+                }
 
                 let prompt = parts.join('，');
 
-                // 负面
+                // 负面（平台适配，权重暂不加到负面）
                 const negativeTexts = [];
                 shotData.negative.forEach(v => {
                     const item = optionData.negative.find(i => i.value === v);
@@ -865,44 +1246,16 @@
                 return Array.from(document.querySelectorAll('.shot-card')).map(card => collectShotData(card));
             }
 
-            // 绑定镜头事件
-            function bindShotEvents(card) {
-                card.querySelectorAll('input, select, textarea').forEach(el => {
-                    el.addEventListener('input', () => { updatePreview(); saveToLocalStorage(); });
-                    el.addEventListener('change', () => { updatePreview(); saveToLocalStorage(); });
-                });
-
-                card.querySelector('.copy-shot-btn').addEventListener('click', () => {
-                    const data = collectShotData(card);
-                    const newId = ++shotCounter;
-                    const newCard = createShotCard(newId, data);
-                    shotsContainer.appendChild(newCard);
-                    bindShotEvents(newCard);
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-
-                card.querySelector('.delete-shot-btn').addEventListener('click', () => {
-                    if (document.querySelectorAll('.shot-card').length <= 1) {
-                        alert('至少保留一个镜头');
-                        return;
-                    }
-                    card.remove();
-                    updatePreview();
-                    saveToLocalStorage();
-                });
-            }
-
-            // 保存配置
+            // 保存配置到localStorage
             function saveToLocalStorage() {
                 const shots = collectAllShots();
-                localStorage.setItem('multiShotFull', JSON.stringify(shots));
-                showToast('配置已保存');
+                localStorage.setItem('directorFull', JSON.stringify(shots));
+                // 不弹toast，避免频繁提示
             }
 
             // 加载配置
             function loadFromLocalStorage() {
-                const saved = localStorage.getItem('multiShotFull');
+                const saved = localStorage.getItem('directorFull');
                 if (!saved) { showToast('无保存配置'); return; }
                 try {
                     const shots = JSON.parse(saved);
@@ -910,7 +1263,7 @@
                     shotCounter = 0;
                     shots.forEach(data => {
                         const newId = ++shotCounter;
-                        const card = createShotCard(newId, data);
+                        const card = createShotCard(newId, data, false);
                         shotsContainer.appendChild(card);
                         bindShotEvents(card);
                     });
@@ -924,21 +1277,83 @@
                 shotsContainer.innerHTML = '';
                 shotCounter = 0;
                 const newId = ++shotCounter;
-                const card = createShotCard(newId, {});
+                const card = createShotCard(newId, {}, false);
                 shotsContainer.appendChild(card);
                 bindShotEvents(card);
                 updatePreview();
                 saveToLocalStorage();
             }
 
-            // 语言切换
+            // 绑定镜头事件（包括折叠、移动、复制、删除等）
+            function bindShotEvents(card) {
+                // 所有输入变化实时更新预览并保存
+                card.querySelectorAll('input, select, textarea').forEach(el => {
+                    el.addEventListener('input', debouncedUpdatePreview);
+                    el.addEventListener('change', debouncedUpdatePreview);
+                });
+                // 额外监听滑块变化（已单独加过，但为保险再加）
+                card.querySelectorAll('input[type=range]').forEach(slider => {
+                    slider.addEventListener('input', debouncedUpdatePreview);
+                });
+
+                // 复制镜头
+                card.querySelector('.copy-shot-btn').addEventListener('click', () => {
+                    const data = collectShotData(card);
+                    const newId = ++shotCounter;
+                    const newCard = createShotCard(newId, data, card.classList.contains('expanded'));
+                    shotsContainer.appendChild(newCard);
+                    bindShotEvents(newCard);
+                    updatePreview();
+                    saveToLocalStorage();
+                });
+
+                // 删除镜头
+                card.querySelector('.delete-shot-btn').addEventListener('click', () => {
+                    if (document.querySelectorAll('.shot-card').length <= 1) {
+                        alert('至少保留一个镜头');
+                        return;
+                    }
+                    card.remove();
+                    updatePreview();
+                    saveToLocalStorage();
+                });
+
+                // 折叠/展开
+                const toggleBtn = card.querySelector('.toggle-collapse-btn');
+                toggleBtn.addEventListener('click', () => {
+                    card.classList.toggle('expanded');
+                    toggleBtn.textContent = card.classList.contains('expanded') ? '🔼 折叠' : '🔽 展开';
+                });
+
+                // 上移/下移
+                const upBtn = card.querySelector('.move-up-btn');
+                const downBtn = card.querySelector('.move-down-btn');
+                upBtn.addEventListener('click', () => {
+                    const prev = card.previousElementSibling;
+                    if (prev) {
+                        shotsContainer.insertBefore(card, prev);
+                        updatePreview();
+                        saveToLocalStorage();
+                    }
+                });
+                downBtn.addEventListener('click', () => {
+                    const next = card.nextElementSibling;
+                    if (next) {
+                        shotsContainer.insertBefore(next, card);
+                        updatePreview();
+                        saveToLocalStorage();
+                    }
+                });
+            }
+
+            // 语言切换（动态更新）
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentLang = btn.dataset.lang;
-                    // 简单刷新（实际可优化，为省事用重载）
-                    location.reload();
+                    updateAllLang();
+                    updatePreview();
                 });
             });
 
@@ -952,46 +1367,188 @@
                 });
             });
 
-            // 模板按钮
+            // 多镜头模板应用
             document.querySelectorAll('.template-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const tmpl = templates[btn.dataset.template];
+                    const tmpl = multiShotTemplates[btn.dataset.template];
                     if (!tmpl) return;
-                    // 清空并新建一个镜头
                     shotsContainer.innerHTML = '';
                     shotCounter = 0;
-                    const newId = ++shotCounter;
-                    const card = createShotCard(newId, {
-                        subject: currentLang === 'zh' ? tmpl.subject.zh : tmpl.subject.en,
-                        action: tmpl.action,
-                        emotion: tmpl.emotion,
-                        style: tmpl.style,
-                        effect: tmpl.effect,
-                        physics: tmpl.physics,
-                        camera: tmpl.camera,
-                        lighting: tmpl.lighting,
-                        interaction: tmpl.interaction,
-                        position: tmpl.position,
-                        negative: tmpl.negative
+                    tmpl.forEach(shotData => {
+                        const newId = ++shotCounter;
+                        // 确保权重默认1
+                        shotData.actionWeight = shotData.actionWeight || 1;
+                        shotData.emotionWeight = shotData.emotionWeight || 1;
+                        shotData.styleWeight = shotData.styleWeight || 1;
+                        shotData.cameraWeight = shotData.cameraWeight || 1;
+                        shotData.positionWeight = shotData.positionWeight || 1;
+                        shotData.lightingWeight = shotData.lightingWeight || 1;
+                        shotData.effectWeight = shotData.effectWeight || 1;
+                        shotData.physicsWeight = shotData.physicsWeight || 1;
+                        shotData.interactionWeight = shotData.interactionWeight || 1;
+                        shotData.negativeWeight = shotData.negativeWeight || 1;
+                        const card = createShotCard(newId, shotData, false);
+                        shotsContainer.appendChild(card);
+                        bindShotEvents(card);
                     });
-                    shotsContainer.appendChild(card);
-                    bindShotEvents(card);
                     updatePreview();
                     saveToLocalStorage();
                 });
             });
 
-            // 添加镜头
+            // 批量工具：复制当前镜头到所有
+            document.getElementById('applyToAllBtn').addEventListener('click', () => {
+                const cards = document.querySelectorAll('.shot-card');
+                if (cards.length === 0) return;
+                const firstData = collectShotData(cards[0]);
+                cards.forEach((card, idx) => {
+                    if (idx === 0) return;
+                    // 更新card的值
+                    card.querySelector('.shot-subject').value = firstData.subject;
+                    // 动作
+                    card.querySelectorAll('.shot-action-cb').forEach(cb => cb.checked = false);
+                    firstData.action.forEach(val => {
+                        const cb = card.querySelector(`.shot-action-cb[value="${val}"]`);
+                        if (cb) cb.checked = true;
+                    });
+                    card.querySelector('.shot-action-custom').value = firstData.actionCustom;
+                    card.querySelector('.shot-action-weight').value = firstData.actionWeight;
+                    card.querySelector('.shot-action-weight + .weight-value').textContent = firstData.actionWeight;
+
+                    // 情绪
+                    card.querySelector('.shot-emotion').value = firstData.emotion;
+                    card.querySelector('.shot-emotion-custom').value = firstData.emotionCustom;
+                    card.querySelector('.shot-emotion-weight').value = firstData.emotionWeight;
+                    card.querySelector('.shot-emotion-weight + .weight-value').textContent = firstData.emotionWeight;
+
+                    // 风格
+                    card.querySelector('.shot-style').value = firstData.style;
+                    card.querySelector('.shot-style-custom').value = firstData.styleCustom;
+                    card.querySelector('.shot-style-weight').value = firstData.styleWeight;
+                    card.querySelector('.shot-style-weight + .weight-value').textContent = firstData.styleWeight;
+
+                    // 运镜
+                    card.querySelector('.shot-camera').value = firstData.camera;
+                    card.querySelector('.shot-camera-custom').value = firstData.cameraCustom;
+                    card.querySelector('.shot-camera-weight').value = firstData.cameraWeight;
+                    card.querySelector('.shot-camera-weight + .weight-value').textContent = firstData.cameraWeight;
+
+                    // 站位
+                    card.querySelector('.shot-position').value = firstData.position;
+                    card.querySelector('.shot-position-custom').value = firstData.positionCustom;
+                    card.querySelector('.shot-position-weight').value = firstData.positionWeight;
+                    card.querySelector('.shot-position-weight + .weight-value').textContent = firstData.positionWeight;
+
+                    // 光影
+                    card.querySelector('.shot-lighting').value = firstData.lighting;
+                    card.querySelector('.shot-lighting-custom').value = firstData.lightingCustom;
+                    card.querySelector('.shot-lighting-weight').value = firstData.lightingWeight;
+                    card.querySelector('.shot-lighting-weight + .weight-value').textContent = firstData.lightingWeight;
+
+                    // 特效
+                    card.querySelector('.shot-effect').value = firstData.effect;
+                    card.querySelector('.shot-effect-custom').value = firstData.effectCustom;
+                    card.querySelector('.shot-effect-weight').value = firstData.effectWeight;
+                    card.querySelector('.shot-effect-weight + .weight-value').textContent = firstData.effectWeight;
+
+                    // 物理
+                    card.querySelector('.shot-physics').value = firstData.physics;
+                    card.querySelector('.shot-physics-custom').value = firstData.physicsCustom;
+                    card.querySelector('.shot-physics-weight').value = firstData.physicsWeight;
+                    card.querySelector('.shot-physics-weight + .weight-value').textContent = firstData.physicsWeight;
+
+                    // 互动
+                    card.querySelector('.shot-interaction').value = firstData.interaction;
+                    card.querySelector('.shot-interaction-custom').value = firstData.interactionCustom;
+                    card.querySelector('.shot-interaction-weight').value = firstData.interactionWeight;
+                    card.querySelector('.shot-interaction-weight + .weight-value').textContent = firstData.interactionWeight;
+
+                    // 负面
+                    card.querySelectorAll('.shot-negative-cb').forEach(cb => cb.checked = false);
+                    firstData.negative.forEach(val => {
+                        const cb = card.querySelector(`.shot-negative-cb[value="${val}"]`);
+                        if (cb) cb.checked = true;
+                    });
+                    card.querySelector('.shot-negative-custom').value = firstData.negativeCustom;
+                    card.querySelector('.shot-negative-weight').value = firstData.negativeWeight;
+                    card.querySelector('.shot-negative-weight + .weight-value').textContent = firstData.negativeWeight;
+                });
+                updatePreview();
+                saveToLocalStorage();
+                showToast('已应用到所有镜头');
+            });
+
+            // 折叠/展开所有
+            document.getElementById('collapseAllBtn').addEventListener('click', () => {
+                document.querySelectorAll('.shot-card').forEach(card => {
+                    card.classList.remove('expanded');
+                    const btn = card.querySelector('.toggle-collapse-btn');
+                    if (btn) btn.textContent = '🔽 展开';
+                });
+            });
+            document.getElementById('expandAllBtn').addEventListener('click', () => {
+                document.querySelectorAll('.shot-card').forEach(card => {
+                    card.classList.add('expanded');
+                    const btn = card.querySelector('.toggle-collapse-btn');
+                    if (btn) btn.textContent = '🔼 折叠';
+                });
+            });
+
+            // 导出配置
+            document.getElementById('exportConfigBtn').addEventListener('click', () => {
+                const shots = collectAllShots();
+                const dataStr = JSON.stringify(shots, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `prompt_config_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('配置已导出');
+            });
+
+            // 导入配置
+            document.getElementById('importConfigBtn').addEventListener('click', () => {
+                document.getElementById('importFile').click();
+            });
+            document.getElementById('importFile').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        const shots = JSON.parse(ev.target.result);
+                        shotsContainer.innerHTML = '';
+                        shotCounter = 0;
+                        shots.forEach(data => {
+                            const newId = ++shotCounter;
+                            const card = createShotCard(newId, data, false);
+                            shotsContainer.appendChild(card);
+                            bindShotEvents(card);
+                        });
+                        updatePreview();
+                        saveToLocalStorage();
+                        showToast('配置已导入');
+                    } catch {
+                        showToast('文件格式错误');
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+            });
+
+            // 添加镜头按钮
             document.getElementById('addShotBtn').addEventListener('click', () => {
                 const newId = ++shotCounter;
-                const card = createShotCard(newId, {});
+                const card = createShotCard(newId, {}, false);
                 shotsContainer.appendChild(card);
                 bindShotEvents(card);
                 updatePreview();
                 saveToLocalStorage();
             });
 
-            // 保存/加载/清空/复制按钮
+            // 保存/加载/清空/复制
             document.getElementById('saveConfigBtn').addEventListener('click', saveToLocalStorage);
             document.getElementById('loadConfigBtn').addEventListener('click', loadFromLocalStorage);
             document.getElementById('clearBtn').addEventListener('click', clearAll);
@@ -1004,11 +1561,26 @@
 
             // 初始化
             (function init() {
-                const newId = ++shotCounter;
-                const card = createShotCard(newId, {});
-                shotsContainer.appendChild(card);
-                bindShotEvents(card);
-                updatePreview();
+                const saved = localStorage.getItem('directorFull');
+                if (saved) {
+                    try {
+                        const shots = JSON.parse(saved);
+                        shotsContainer.innerHTML = '';
+                        shotCounter = 0;
+                        shots.forEach(data => {
+                            const newId = ++shotCounter;
+                            const card = createShotCard(newId, data, false);
+                            shotsContainer.appendChild(card);
+                            bindShotEvents(card);
+                        });
+                        updatePreview();
+                    } catch {
+                        // 默认新建
+                        clearAll();
+                    }
+                } else {
+                    clearAll();
+                }
             })();
         })();
     </script>
